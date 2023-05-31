@@ -46,6 +46,8 @@ public class ServiceBean implements Service {
                     entity.setName(employee.getName());
                     entity.setEmail(employee.getEmail());
                     entity.setCountry(employee.getCountry());
+                    /**!!!!!!*/
+                    entity.setDeleted(employee.isDeleted());
                     return repository.save(entity);
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Employee not found with id = " + id));
@@ -53,18 +55,28 @@ public class ServiceBean implements Service {
 
     @Override
     public void removeById(Integer id) {
-        //repository.deleteById(id);
         Employee employee = repository.findById(id)
-                // .orElseThrow(() -> new EntityNotFoundException("Employee not found with id = " + id));
-                .orElseThrow(ResourceWasDeletedException::new);
-        //employee.setIsDeleted(true);
+                .orElseThrow(() -> new EntityNotFoundException("Employee not found with id = " + id));
+        employee.setDeleted(true);
+        repository.save(employee);
+    }
+
+    /**
+     * @Autor Viacheslav Korbut
+     * Removes from the database. Use only by administrators.
+     */
+    @Override
+    public void removeByIdAdmin(Integer id) {
+        Employee employee = repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Employee not found with id = " + id));
         repository.delete(employee);
-        //repository.save(employee);
     }
 
     @Override
     public void removeAll() {
-        repository.deleteAll();
-
+        getAll().forEach(employee -> {
+            employee.setDeleted(true);
+            repository.save(employee);
+        });
     }
 }

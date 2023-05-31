@@ -16,29 +16,28 @@ public class Controller {
 
     private final Service service;
 
-    //Операция сохранения юзера в базу данных
+    //Save user in database
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
     public Employee saveEmployee(@RequestBody Employee employee) {
         return service.create(employee);
     }
 
-    //Получение списка юзеров
+    //Get all employees from database
     @GetMapping("/users")
     @ResponseStatus(HttpStatus.OK)
     public List<Employee> getAllUsers() {
         return service.getAll();
     }
 
-    //Получения юзера по id
+    //Get employee by id from database
     @GetMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Employee getEmployeeById(@PathVariable Integer id) {
-
         return service.getById(id);
     }
 
-    //Обновление юзера
+    //Update employee by id
     @PutMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Employee refreshEmployee(@PathVariable("id") Integer id, @RequestBody Employee employee) {
@@ -46,15 +45,25 @@ public class Controller {
         return service.updateById(id, employee);
     }
 
-    //Удаление по id
+    //Remove employee by id
     @PatchMapping("/users/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeEmployeeById(@PathVariable Integer id) {
         service.removeById(id);
     }
 
-    //Удаление всех юзеров
-    @DeleteMapping("/users")
+    /**
+     * Attention!!!
+     */
+    //Remove employee by id from database. Use only by administrators!!!
+    @DeleteMapping("/users/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeEmployeeByIdAdmin(@PathVariable Integer id) {
+        service.removeByIdAdmin(id);
+    }
+
+    //Remove all employees
+    @PatchMapping("/users")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeAllUsers() {
         service.removeAll();
