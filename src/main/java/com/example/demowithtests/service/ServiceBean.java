@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Slf4j
@@ -24,18 +25,18 @@ public class ServiceBean implements Service {
 
     @Override
     public List<Employee> getAll() {
-        return repository.findAll();
+        List<Employee> employeeList = repository.findAll();
+        employeeList.removeIf(Employee::isDeleted);
+        if (employeeList.isEmpty()) {
+            throw new EntityNotFoundException("Employees not found!");
+        }
+        return employeeList;
     }
 
     @Override
     public Employee getById(Integer id) {
-        Employee employee = repository.findById(id)
-               // .orElseThrow(() -> new EntityNotFoundException("Employee not found with id = " + id));
-                .orElseThrow(ResourceNotFoundException::new);
-         /*if (employee.getIsDeleted()) {
-            throw new EntityNotFoundException("Employee was deleted with id = " + id);
-        }*/
-        return employee;
+        return repository.findById(id).filter(e -> !e.isDeleted())
+                .orElseThrow(() -> new EntityNotFoundException("Employee not found with id = " + id));
     }
 
     @Override
@@ -54,7 +55,7 @@ public class ServiceBean implements Service {
     public void removeById(Integer id) {
         //repository.deleteById(id);
         Employee employee = repository.findById(id)
-               // .orElseThrow(() -> new EntityNotFoundException("Employee not found with id = " + id));
+                // .orElseThrow(() -> new EntityNotFoundException("Employee not found with id = " + id));
                 .orElseThrow(ResourceWasDeletedException::new);
         //employee.setIsDeleted(true);
         repository.delete(employee);

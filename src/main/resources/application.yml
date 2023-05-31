@@ -3,9 +3,9 @@ spring:
   # Database
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/employee
+    url: jdbc:postgresql://localhost:5432/employee?currentSchema=users
     username: postgres
-    password: postgres
+    password: ${MY_APP_DB_PASSWORD}
   # JPA properties
   jpa:
     hibernate:
@@ -17,6 +17,6 @@ spring:
     generate-ddl: true
 # Server configuration
 server:
-  port: 8087 #set your port
+  port: 8080 #set your port
 
 
