@@ -2,14 +2,11 @@ package com.example.demowithtests.service;
 
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.repository.Repository;
-import com.example.demowithtests.util.ResourceNotFoundException;
-import com.example.demowithtests.util.ResourceWasDeletedException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Slf4j
@@ -46,8 +43,6 @@ public class ServiceBean implements Service {
                     entity.setName(employee.getName());
                     entity.setEmail(employee.getEmail());
                     entity.setCountry(employee.getCountry());
-                    /**!!!!!!*/
-                    entity.setDeleted(employee.isDeleted());
                     return repository.save(entity);
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Employee not found with id = " + id));
@@ -79,4 +74,17 @@ public class ServiceBean implements Service {
             repository.save(employee);
         });
     }
+
+    /**
+     * @Autor Viacheslav Korbut
+     * Recover from the database all employees. Use only by administrators.
+     */
+    @Override
+    public void recoverAllAdmin() {
+        repository.findAll().forEach(employee -> {
+            employee.setDeleted(false);
+            repository.save(employee);
+        });
+    }
+
 }

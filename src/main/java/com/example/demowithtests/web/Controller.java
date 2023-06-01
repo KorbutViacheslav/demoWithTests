@@ -68,4 +68,11 @@ public class Controller {
     public void removeAllUsers() {
         service.removeAll();
     }
+
+    //Recover all employees
+    @PutMapping("/users")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void recoverAllUsers() {
+        service.recoverAllAdmin();
+    }
 }

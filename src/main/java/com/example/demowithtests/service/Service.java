@@ -20,4 +20,6 @@ public interface Service {
 
     void removeAll();
 
+    void recoverAllAdmin();
+
 }
