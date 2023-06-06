@@ -10,7 +10,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/employee
     username: postgres
-    password: postgres
+    password: ${MY_APP_DB_PASSWORD}
   # JPA properties
   jpa:
     hibernate:
@@ -35,7 +35,7 @@ logging:
     console: "%d %-5level %logger : %msg%n"
   level:
     org.springframework: info
-    org.hibernate: debug
+    org.hibernate: error
 # Server configuration
 server:
   port: 8088 #set your port
