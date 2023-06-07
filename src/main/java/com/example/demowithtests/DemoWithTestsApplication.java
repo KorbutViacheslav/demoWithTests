@@ -2,8 +2,6 @@ package com.example.demowithtests;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-//my fork
-//test
 
 @SpringBootApplication
 public class DemoWithTestsApplication {

@@ -8,7 +8,7 @@ spring:
   # Database
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/employee
+    url: jdbc:postgresql://localhost:5432/employee?currentSchema=users
     username: postgres
     password: ${MY_APP_DB_PASSWORD}
   # JPA properties
@@ -34,11 +34,11 @@ logging:
   pattern:
     console: "%d %-5level %logger : %msg%n"
   level:
-    org.springframework: info
+    org.springframework: error
     org.hibernate: error
 # Server configuration
 server:
-  port: 8088 #set your port
+  port: 8080 #set your port
 # Swagger configuration
 springdoc:
   swagger-ui:

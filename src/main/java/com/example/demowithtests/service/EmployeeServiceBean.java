@@ -46,7 +46,12 @@ public class EmployeeServiceBean implements EmployeeService {
 
     @Override
     public List<Employee> getAll() {
-        return employeeRepository.findAll();
+        List<Employee> employeeList = employeeRepository.findAll();
+        employeeList.removeIf(Employee::isDeleted);
+        if (employeeList.isEmpty()) {
+            throw new EntityNotFoundException("Employees not found!");
+        }
+        return employeeList;
     }
 
     @Override
@@ -59,13 +64,12 @@ public class EmployeeServiceBean implements EmployeeService {
 
     @Override
     public Employee getById(Integer id) {
-        var employee = employeeRepository.findById(id)
-                // .orElseThrow(() -> new EntityNotFoundException("Employee not found with id = " + id));
-                .orElseThrow(ResourceNotFoundException::new);
-        /* if (employee.getIsDeleted()) {
-            throw new EntityNotFoundException("Employee was deleted with id = " + id);
-        }*/
-        return employee;
+        return employeeRepository.findById(id)
+                .filter(e -> !e.isDeleted())
+                .orElseThrow(() -> (employeeRepository.existsById(id))
+                        ? new ResourceWasDeletedException("Employee was deleted with id = " + id)
+                        : new ResourceNotFoundException("Employee not found with id = " + id)
+                );
     }
 
     @Override
@@ -77,18 +81,21 @@ public class EmployeeServiceBean implements EmployeeService {
                     entity.setCountry(employee.getCountry());
                     return employeeRepository.save(entity);
                 })
-                .orElseThrow(() -> new EntityNotFoundException("Employee not found with id = " + id));
+                .orElseThrow(() -> (employeeRepository.existsById(id))
+                        ? new ResourceWasDeletedException("Employee was deleted with id = " + id)
+                        : new ResourceNotFoundException("Employee not found with id = " + id)
+                );
     }
 
     @Override
     public void removeById(Integer id) {
-        //repository.deleteById(id);
-        var employee = employeeRepository.findById(id)
-                // .orElseThrow(() -> new EntityNotFoundException("Employee not found with id = " + id));
-                .orElseThrow(ResourceWasDeletedException::new);
-        //employee.setIsDeleted(true);
-        employeeRepository.delete(employee);
-        //repository.save(employee);
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> (employeeRepository.existsById(id))
+                        ? new ResourceWasDeletedException("Employee was deleted with id = " + id)
+                        : new ResourceNotFoundException("Employee not found with id = " + id)
+                );
+        employee.setDeleted(true);
+        employeeRepository.save(employee);
     }
 
 
