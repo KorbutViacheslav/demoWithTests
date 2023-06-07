@@ -1,19 +1,40 @@
 package com.example.demowithtests.service;
 
-import com.example.demowithtests.repository.EmployeeRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import com.example.demowithtests.domain.Employee;
+import org.springframework.data.domain.Page;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import java.util.List;
+import java.util.Optional;
 
-@RequiredArgsConstructor
-@Slf4j
-@Service
-public class EmployeeSearchService implements EmployeeSearchServiceImpl {
-    private final EmployeeRepository employeeRepository;
+public interface EmployeeSearchService {
+    //Page<Employee> findByCountryContaining(String country, Pageable pageable);
 
-    @PersistenceContext
-    private EntityManager entityManager;
+    /**
+     * @param country   Filter for the country if required
+     * @param page      number of the page returned
+     * @param size      number of entries in each page
+     * @param sortList  list of columns to sort on
+     * @param sortOrder sort order. Can be ASC or DESC
+     * @return Page object with customers after filtering and sorting
+     */
+
+    Page<Employee> findByCountryContaining(String country, int page, int size, List<String> sortList, String sortOrder);
+
+    /**
+     * Get all the countries of all the employees.
+     *
+     * @return A list of all the countries that employees are from.
+     */
+    List<String> getAllEmployeeCountry();
+
+    /**
+     * It returns a list of countries sorted by name.
+     *
+     * @return A list of countries in alphabetical order.
+     */
+    List<String> getSortCountry();
+
+    Optional<String> findEmails();
+
+    List<Employee> filterByCountry(String country);
 }

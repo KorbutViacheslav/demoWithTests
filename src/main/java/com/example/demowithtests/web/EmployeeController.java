@@ -3,6 +3,7 @@ package com.example.demowithtests.web;
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.dto.EmployeeDto;
 import com.example.demowithtests.dto.EmployeeReadDto;
+import com.example.demowithtests.service.EmployeeSearchService;
 import com.example.demowithtests.service.EmployeeService;
 import com.example.demowithtests.util.config.EmployeeConverter;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,6 +32,7 @@ import java.util.Optional;
 public class EmployeeController {
 
     private final EmployeeService employeeService;
+    private final EmployeeSearchService employeeSearchService;
     private final EmployeeConverter converter;
 
     //Операция сохранения юзера в базу данных
@@ -49,6 +51,7 @@ public class EmployeeController {
 
         return dto;
     }
+
     @PostMapping("/usersS")
     @ResponseStatus(HttpStatus.CREATED)
     public void saveEmployee1(@RequestBody Employee employee) {
@@ -122,30 +125,30 @@ public class EmployeeController {
                                         @RequestParam(defaultValue = "DESC") Sort.Direction sortOrder) {
         //Pageable paging = PageRequest.of(page, size);
         //Pageable paging = PageRequest.of(page, size, Sort.by("name").ascending());
-        return employeeService.findByCountryContaining(country, page, size, sortList, sortOrder.toString());
+        return employeeSearchService.findByCountryContaining(country, page, size, sortList, sortOrder.toString());
     }
 
     @GetMapping("/users/c")
     @ResponseStatus(HttpStatus.OK)
     public List<String> getAllUsersC() {
-        return employeeService.getAllEmployeeCountry();
+        return employeeSearchService.getAllEmployeeCountry();
     }
 
     @GetMapping("/users/s")
     @ResponseStatus(HttpStatus.OK)
     public List<String> getAllUsersSort() {
-        return employeeService.getSortCountry();
+        return employeeSearchService.getSortCountry();
     }
 
     @GetMapping("/users/emails")
     @ResponseStatus(HttpStatus.OK)
     public Optional<String> getAllUsersSo() {
-        return employeeService.findEmails();
+        return employeeSearchService.findEmails();
     }
 
     @GetMapping("/users/countryBy")
     @ResponseStatus(HttpStatus.OK)
     public List<Employee> getByCountry(@RequestParam(required = true) String country) {
-        return employeeService.filterByCountry(country);
+        return employeeSearchService.filterByCountry(country);
     }
 }

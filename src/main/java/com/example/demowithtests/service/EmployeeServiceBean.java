@@ -34,7 +34,7 @@ public class EmployeeServiceBean implements EmployeeService {
     private EntityManager entityManager;
 
     @Override
-   // @Transactional(propagation = Propagation.MANDATORY)
+    // @Transactional(propagation = Propagation.MANDATORY)
     public Employee create(Employee employee) {
         return employeeRepository.save(employee);
     }
@@ -137,76 +137,5 @@ public class EmployeeServiceBean implements EmployeeService {
         employeeRepository.deleteAll();
     }
 
-    /*@Override
-    public Page<Employee> findByCountryContaining(String country, Pageable pageable) {
-        return employeeRepository.findByCountryContaining(country, pageable);
-    }*/
 
-    @Override
-    public Page<Employee> findByCountryContaining(String country, int page, int size, List<String> sortList, String sortOrder) {
-        // create Pageable object using the page, size and sort details
-        Pageable pageable = PageRequest.of(page, size, Sort.by(createSortOrder(sortList, sortOrder)));
-        // fetch the page object by additionally passing pageable with the filters
-        return employeeRepository.findByCountryContaining(country, pageable);
-    }
-
-    private List<Sort.Order> createSortOrder(List<String> sortList, String sortDirection) {
-        List<Sort.Order> sorts = new ArrayList<>();
-        Sort.Direction direction;
-        for (String sort : sortList) {
-            if (sortDirection != null) {
-                direction = Sort.Direction.fromString(sortDirection);
-            } else {
-                direction = Sort.Direction.DESC;
-            }
-            sorts.add(new Sort.Order(direction, sort));
-        }
-        return sorts;
-    }
-
-    @Override
-    public List<String> getAllEmployeeCountry() {
-        log.info("getAllEmployeeCountry() - start:");
-        List<Employee> employeeList = employeeRepository.findAll();
-        List<String> countries = employeeList.stream()
-                .map(country -> country.getCountry())
-                .collect(Collectors.toList());
-        /*List<String> countries = employeeList.stream()
-                .map(Employee::getCountry)
-                //.sorted(Comparator.naturalOrder())
-                .collect(Collectors.toList());*/
-
-        log.info("getAllEmployeeCountry() - end: countries = {}", countries);
-        return countries;
-    }
-
-    @Override
-    public List<String> getSortCountry() {
-        List<Employee> employeeList = employeeRepository.findAll();
-        return employeeList.stream()
-                .map(Employee::getCountry)
-                .filter(c -> c.startsWith("U"))
-                .sorted(Comparator.naturalOrder())
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public Optional<String> findEmails() {
-        var employeeList = employeeRepository.findAll();
-
-        var emails = employeeList.stream()
-                .map(Employee::getEmail)
-                .collect(Collectors.toList());
-
-        var opt = emails.stream()
-                .filter(s -> s.endsWith(".com"))
-                .findFirst()
-                .orElse("error?");
-        return Optional.ofNullable(opt);
-    }
-
-    @Override
-    public List<Employee> filterByCountry(String country) {
-        return employeeRepository.findByCountry(country);
-    }
 }
