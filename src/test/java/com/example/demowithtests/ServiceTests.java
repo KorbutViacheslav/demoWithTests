@@ -3,7 +3,7 @@ package com.example.demowithtests;
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.domain.Gender;
 import com.example.demowithtests.repository.EmployeeRepository;
-import com.example.demowithtests.service.EmployeeServiceBean;
+import com.example.demowithtests.service.EmployeeCRUDService;
 import com.example.demowithtests.util.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +31,7 @@ public class ServiceTests {
     private EmployeeRepository employeeRepository;
 
     @InjectMocks
-    private EmployeeServiceBean service;
+    private EmployeeCRUDService service;
 
     private Employee employee;
 

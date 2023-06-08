@@ -10,8 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -24,8 +22,6 @@ import java.util.stream.Collectors;
 public class EmployeeSearchSortService implements EmployeeSearchService {
     private final EmployeeRepository employeeRepository;
 
-    @PersistenceContext
-    private EntityManager entityManager;
         /*@Override
     public Page<Employee> findByCountryContaining(String country, Pageable pageable) {
         return employeeRepository.findByCountryContaining(country, pageable);

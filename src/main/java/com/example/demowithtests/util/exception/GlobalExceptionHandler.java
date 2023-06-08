@@ -12,31 +12,48 @@ import java.util.Date;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+    private final static String EMPLOYEE_NOT_FOUND = "Employee not found with id = ";
+    private final static String EMPLOYEE_WAS_DELETED = "Employee was deleted with id = ";
+    private final static String EMPLOYEE_CONTAINS = "Employee already exists!";
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<?> resourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
-       /* ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));*/
+    public ResponseEntity<?> resourceNotFoundException(WebRequest request) {
         ErrorDetails errorDetails =
                 new ErrorDetails(new Date(),
-                        "Employee not found with id =" + request.getDescription(true),//getParameter("id"),
+                        EMPLOYEE_NOT_FOUND + getIdFromWebRequest(request),
                         request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ResourceWasDeletedException.class)
-    protected ResponseEntity<MyGlobalExceptionHandler> handleDeleteException() {
-        return new ResponseEntity<>(new MyGlobalExceptionHandler("This user was deleted"), HttpStatus.NOT_FOUND);
+    protected ResponseEntity<?> resourceWasDeletedException(WebRequest request) {
+        ErrorDetails errorDetails =
+                new ErrorDetails(new Date(),
+                        EMPLOYEE_WAS_DELETED + getIdFromWebRequest(request),
+                        request.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(EmployeeContainsException.class)
+    protected ResponseEntity<?> employeeContainsException(WebRequest request) {
+        ErrorDetails errorDetails =
+                new ErrorDetails(new Date(),
+                        EMPLOYEE_CONTAINS,
+                        request.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> globleExcpetionHandler(Exception ex, WebRequest request) {
-        ErrorDetails errorDetails = new ErrorDetails(new Date(), ex.getMessage(), request.getDescription(false));
+    public ResponseEntity<?> globalExceptionHandler(Exception ex, WebRequest request) {
+        ErrorDetails errorDetails =
+                new ErrorDetails(new Date(),
+                        ex.getMessage(), request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @Data
-    @AllArgsConstructor
-    private static class MyGlobalExceptionHandler {
-        private String message;
+    private static String getIdFromWebRequest(WebRequest request) {
+        String path = request.getDescription(false);
+        String[] pathSegments = path.split("/");
+        return pathSegments[pathSegments.length - 1];
     }
 }

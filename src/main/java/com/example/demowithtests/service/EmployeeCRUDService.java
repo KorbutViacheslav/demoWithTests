@@ -2,31 +2,25 @@ package com.example.demowithtests.service;
 
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.repository.EmployeeRepository;
+import com.example.demowithtests.util.exception.EmployeeContainsException;
 import com.example.demowithtests.util.exception.ResourceNotFoundException;
 import com.example.demowithtests.util.exception.ResourceWasDeletedException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class EmployeeServiceBean implements EmployeeService {
+public class EmployeeCRUDService implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
 
@@ -36,6 +30,15 @@ public class EmployeeServiceBean implements EmployeeService {
     @Override
     // @Transactional(propagation = Propagation.MANDATORY)
     public Employee create(Employee employee) {
+        getAll().stream().filter(emp ->
+                        emp.getName().equals(employee.getName()) &&
+                                emp.getCountry().equals(employee.getCountry()) &&
+                                emp.getEmail().equals(employee.getEmail()))
+                .findAny()
+                .ifPresent(emp -> {
+                    throw new EmployeeContainsException();
+                });
+
         return employeeRepository.save(employee);
     }
 
@@ -46,8 +49,10 @@ public class EmployeeServiceBean implements EmployeeService {
 
     @Override
     public List<Employee> getAll() {
-        List<Employee> employeeList = employeeRepository.findAll();
-        employeeList.removeIf(Employee::isDeleted);
+        List<Employee> employeeList = employeeRepository.findAll()
+                .stream()
+                .filter(employee -> !employee.isDeleted())
+                .collect(Collectors.toList());
         if (employeeList.isEmpty()) {
             throw new EntityNotFoundException("Employees not found!");
         }
@@ -67,8 +72,8 @@ public class EmployeeServiceBean implements EmployeeService {
         return employeeRepository.findById(id)
                 .filter(e -> !e.isDeleted())
                 .orElseThrow(() -> (employeeRepository.existsById(id))
-                        ? new ResourceWasDeletedException("Employee was deleted with id = " + id)
-                        : new ResourceNotFoundException("Employee not found with id = " + id)
+                        ? new ResourceWasDeletedException()
+                        : new ResourceNotFoundException()
                 );
     }
 
@@ -82,8 +87,8 @@ public class EmployeeServiceBean implements EmployeeService {
                     return employeeRepository.save(entity);
                 })
                 .orElseThrow(() -> (employeeRepository.existsById(id))
-                        ? new ResourceWasDeletedException("Employee was deleted with id = " + id)
-                        : new ResourceNotFoundException("Employee not found with id = " + id)
+                        ? new ResourceWasDeletedException()
+                        : new ResourceNotFoundException()
                 );
     }
 
@@ -91,19 +96,21 @@ public class EmployeeServiceBean implements EmployeeService {
     public void removeById(Integer id) {
         Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> (employeeRepository.existsById(id))
-                        ? new ResourceWasDeletedException("Employee was deleted with id = " + id)
-                        : new ResourceNotFoundException("Employee not found with id = " + id)
+                        ? new ResourceWasDeletedException()
+                        : new ResourceNotFoundException()
                 );
         employee.setDeleted(true);
         employeeRepository.save(employee);
     }
 
 
-
-
-
-
-
+    @Override
+    public void removeAll() {
+        getAll().forEach(employee -> {
+            employee.setDeleted(true);
+            employeeRepository.save(employee);
+        });
+    }
    /* public boolean isValid(Employee employee) {
         String regex = "^[0-9]{10}$";
         Pattern pattern = Pattern.compile(regex);
@@ -131,11 +138,5 @@ public class EmployeeServiceBean implements EmployeeService {
             return false;
         }
     }*/
-
-    @Override
-    public void removeAll() {
-        employeeRepository.deleteAll();
-    }
-
 
 }

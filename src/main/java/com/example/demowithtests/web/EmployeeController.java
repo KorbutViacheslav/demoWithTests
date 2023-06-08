@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -54,10 +55,10 @@ public class EmployeeController {
 
     @PostMapping("/usersS")
     @ResponseStatus(HttpStatus.CREATED)
-    public void saveEmployee1(@RequestBody Employee employee) {
-
+    public ResponseEntity<String> saveEmployee1(@RequestBody Employee employee) {
         employeeService.create(employee);
-
+        String massage = "The new employee is successfully created and added to database.\n"+ employee.toString();
+        return ResponseEntity.ok(massage);
     }
 
     //Получение списка юзеров
@@ -94,22 +95,23 @@ public class EmployeeController {
         return dto;
     }
 
-    //Обновление юзера
+    //Update user
     @PutMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Employee refreshEmployee(@PathVariable("id") Integer id, @RequestBody Employee employee) {
-
         return employeeService.updateById(id, employee);
     }
 
-    //Удаление по id
+    //Remove by id
     @PatchMapping("/users/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeEmployeeById(@PathVariable Integer id) {
+    public ResponseEntity<String> removeEmployeeById(@PathVariable Integer id) {
         employeeService.removeById(id);
+        String message = "Employee with ID " + id + " has been deleted.";
+        return ResponseEntity.ok(message);
     }
 
-    //Удаление всех юзеров
+    //Remove all users
     @DeleteMapping("/users")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeAllUsers() {
