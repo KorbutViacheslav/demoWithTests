@@ -3,6 +3,7 @@ package com.example.demowithtests.web;
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.dto.EmployeeDto;
 import com.example.demowithtests.dto.EmployeeReadDto;
+import com.example.demowithtests.service.EmployeeCRUDService;
 import com.example.demowithtests.service.EmployeeSearchService;
 import com.example.demowithtests.service.EmployeeService;
 import com.example.demowithtests.util.config.EmployeeConverter;
@@ -35,8 +36,9 @@ public class EmployeeController {
     private final EmployeeService employeeService;
     private final EmployeeSearchService employeeSearchService;
     private final EmployeeConverter converter;
+    private final EmployeeCRUDService employeeCRUDService;
 
-    //Операция сохранения юзера в базу данных
+    //Save users to database(dto)
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "This is endpoint to add a new employee.", description = "Create request to add a new employee.", tags = {"Employee"})
@@ -52,7 +54,7 @@ public class EmployeeController {
 
         return dto;
     }
-
+    //Save users to database
     @PostMapping("/usersS")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<String> saveEmployee1(@RequestBody Employee employee) {
@@ -61,7 +63,7 @@ public class EmployeeController {
         return ResponseEntity.ok(massage);
     }
 
-    //Получение списка юзеров
+    //Get list all users
     @GetMapping("/users")
     @ResponseStatus(HttpStatus.OK)
     public List<Employee> getAllUsers() {
@@ -71,13 +73,13 @@ public class EmployeeController {
     @GetMapping("/users/p")
     @ResponseStatus(HttpStatus.OK)
     public Page<Employee> getPage(@RequestParam(defaultValue = "0") int page,
-                                  @RequestParam(defaultValue = "5") int size
+                                  @RequestParam(defaultValue = "3") int size
     ) {
         Pageable paging = PageRequest.of(page, size);
         return employeeService.getAllWithPagination(paging);
     }
 
-    //Получения юзера по id
+    //Get user by id
     @GetMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "This is endpoint returned a employee by his id.", description = "Create request to read a employee by id", tags = {"Employee"})
@@ -98,8 +100,10 @@ public class EmployeeController {
     //Update user
     @PutMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Employee refreshEmployee(@PathVariable("id") Integer id, @RequestBody Employee employee) {
-        return employeeService.updateById(id, employee);
+    public ResponseEntity<String> refreshEmployee(@PathVariable("id") Integer id, @RequestBody Employee employee) {
+        Employee e=employeeService.updateById(id, employee);
+        String massage="Employee was successful update!\n";
+        return ResponseEntity.ok(massage+e.toString());
     }
 
     //Remove by id
@@ -152,5 +156,11 @@ public class EmployeeController {
     @ResponseStatus(HttpStatus.OK)
     public List<Employee> getByCountry(@RequestParam(required = true) String country) {
         return employeeSearchService.filterByCountry(country);
+    }
+    @DeleteMapping("/usersD")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<String> deleteAllAdmin(){
+        employeeCRUDService.removeAllAdmin();
+        return ResponseEntity.ok("DELETED ALL USERS!\n"+"ERROR!!!");
     }
 }

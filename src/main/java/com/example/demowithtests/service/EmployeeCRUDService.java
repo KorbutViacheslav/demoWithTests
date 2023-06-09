@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,17 +31,10 @@ public class EmployeeCRUDService implements EmployeeService {
     @Override
     // @Transactional(propagation = Propagation.MANDATORY)
     public Employee create(Employee employee) {
-        getAll().stream().filter(emp ->
-                        emp.getName().equals(employee.getName()) &&
-                                emp.getCountry().equals(employee.getCountry()) &&
-                                emp.getEmail().equals(employee.getEmail()))
-                .findAny()
-                .ifPresent(emp -> {
-                    throw new EmployeeContainsException();
-                });
-
+        comparisonEmployee(employee);
         return employeeRepository.save(employee);
     }
+
 
     @Override
     public Employee createEM(Employee employee) {
@@ -52,6 +46,7 @@ public class EmployeeCRUDService implements EmployeeService {
         List<Employee> employeeList = employeeRepository.findAll()
                 .stream()
                 .filter(employee -> !employee.isDeleted())
+                .sorted(Comparator.comparing(Employee::getId))
                 .collect(Collectors.toList());
         if (employeeList.isEmpty()) {
             throw new EntityNotFoundException("Employees not found!");
@@ -79,11 +74,13 @@ public class EmployeeCRUDService implements EmployeeService {
 
     @Override
     public Employee updateById(Integer id, Employee employee) {
+        comparisonEmployee(employee);
         return employeeRepository.findById(id)
                 .map(entity -> {
                     entity.setName(employee.getName());
                     entity.setEmail(employee.getEmail());
                     entity.setCountry(employee.getCountry());
+                    entity.setGender(employee.getGender());
                     return employeeRepository.save(entity);
                 })
                 .orElseThrow(() -> (employeeRepository.existsById(id))
@@ -110,6 +107,21 @@ public class EmployeeCRUDService implements EmployeeService {
             employee.setDeleted(true);
             employeeRepository.save(employee);
         });
+    }
+    public void removeAllAdmin(){
+        employeeRepository.deleteAll();
+    }
+
+    private void comparisonEmployee(Employee employee) {
+        getAll().stream().filter(emp ->
+                        emp.getName().equals(employee.getName()) &&
+                                emp.getCountry().equals(employee.getCountry()) &&
+                                emp.getEmail().equals(employee.getEmail()) &&
+                                emp.getGender().equals(employee.getGender()))
+                .findAny()
+                .ifPresent(emp -> {
+                    throw new EmployeeContainsException();
+                });
     }
    /* public boolean isValid(Employee employee) {
         String regex = "^[0-9]{10}$";

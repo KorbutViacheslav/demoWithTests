@@ -23,11 +23,11 @@ public class Employee {
     private String name;
     private String country;
     private String email;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
     private boolean deleted;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "employee_id")
     private Set<Address> addresses = new HashSet<>();
 
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
 }
