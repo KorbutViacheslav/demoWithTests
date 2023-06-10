@@ -163,4 +163,15 @@ public class EmployeeController {
         employeeCRUDService.removeAllAdmin();
         return ResponseEntity.ok("DELETED ALL USERS!\n"+"ERROR!!!");
     }
+    //home task №6. Get employee by email is null
+    @GetMapping("/users/emailsN")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Employee> getEmployeeByEmailIsNull(){
+        return employeeSearchService.getEmployeeByEmailIsNull();
+    }
+    @GetMapping("/users/countryS/")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Employee> getEmployeeByLowerCaseCountry(){
+        return employeeSearchService.getByLowerCaseCountry();
+    }
 }

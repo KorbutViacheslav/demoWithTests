@@ -37,4 +37,8 @@ public interface EmployeeSearchService {
     Optional<String> findEmails();
 
     List<Employee> filterByCountry(String country);
+
+    //home task №6. Get employee by email is null
+    List<Employee> getEmployeeByEmailIsNull();
+    List<Employee> getByLowerCaseCountry();
 }

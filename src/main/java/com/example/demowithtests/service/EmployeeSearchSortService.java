@@ -4,6 +4,8 @@ import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 @Service
 public class EmployeeSearchSortService implements EmployeeSearchService {
     private final EmployeeRepository employeeRepository;
+    private final EmployeeCRUDService employeeCRUDService;
 
         /*@Override
     public Page<Employee> findByCountryContaining(String country, Pageable pageable) {
@@ -76,9 +79,23 @@ public class EmployeeSearchSortService implements EmployeeSearchService {
         return Optional.ofNullable(opt);
     }
 
+
     @Override
     public List<Employee> filterByCountry(String country) {
         return employeeRepository.findByCountry(country);
+    }
+
+    //home task №6. Get employee by email is null
+    @Override
+    public List<Employee> getEmployeeByEmailIsNull() {
+        return employeeRepository.findByEmailIsNull();
+    }
+    @Override
+    public List<Employee> getByLowerCaseCountry() {
+        return employeeCRUDService.getAll().stream()
+                .filter(e -> Character.isLowerCase(e.getCountry().charAt(0)))
+                .peek(e-> e.setCountry(StringUtils.capitalize(e.getCountry())))
+                .collect(Collectors.toList());
     }
 
     private List<Sort.Order> createSortOrder(List<String> sortList, String sortDirection) {

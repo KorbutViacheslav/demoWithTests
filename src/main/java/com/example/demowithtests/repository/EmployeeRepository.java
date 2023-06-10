@@ -33,4 +33,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
     Page<Employee> findByCountryContaining(String country, Pageable pageable);
 
+    //home task №6. Get employee by email is null
+    List<Employee> findByEmailIsNull();
+
 }

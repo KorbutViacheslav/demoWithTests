@@ -24,7 +24,7 @@ public class EmployeeDto {
     public String country;
 
     @Email
-    @NotNull
+    //@NotNull
     @Schema(description = "Email address of an employee.", example = "billys@mail.com", required = true)
     public String email;
 
