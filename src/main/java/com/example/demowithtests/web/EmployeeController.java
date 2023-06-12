@@ -6,7 +6,7 @@ import com.example.demowithtests.dto.EmployeeReadDto;
 import com.example.demowithtests.service.EmployeeCRUDService;
 import com.example.demowithtests.service.EmployeeSearchService;
 import com.example.demowithtests.service.EmployeeService;
-import com.example.demowithtests.util.config.EmployeeConverter;
+import com.example.demowithtests.util.config.mapstruct.EmployeeMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -35,7 +35,7 @@ public class EmployeeController {
 
     private final EmployeeService employeeService;
     private final EmployeeSearchService employeeSearchService;
-    private final EmployeeConverter converter;
+    private final EmployeeMapper employeeMapper;
     private final EmployeeCRUDService employeeCRUDService;
 
     //Save users to database(dto)
@@ -49,9 +49,9 @@ public class EmployeeController {
             @ApiResponse(responseCode = "409", description = "Employee already exists")})
     public EmployeeDto saveEmployee(@RequestBody @Valid EmployeeDto requestForSave) {
 
-        var employee = converter.getMapperFacade().map(requestForSave, Employee.class);
-        var dto = converter.toDto(employeeService.create(employee));
-
+        var employee = employeeMapper.toEmployee(requestForSave);
+        var createdEmployee = employeeService.create(employee);
+        var dto = employeeMapper.toEmployeeDto(createdEmployee);
         return dto;
     }
     //Save users to database
@@ -92,7 +92,7 @@ public class EmployeeController {
         log.debug("getEmployeeById() EmployeeController - start: id = {}", id);
         var employee = employeeService.getById(id);
         log.debug("getById() EmployeeController - to dto start: id = {}", id);
-        var dto = converter.toReadDto(employee);
+        var dto = employeeMapper.toReadDto(employee);
         log.debug("getEmployeeById() EmployeeController - end: name = {}", dto.name);
         return dto;
     }
@@ -163,12 +163,20 @@ public class EmployeeController {
         employeeCRUDService.removeAllAdmin();
         return ResponseEntity.ok("DELETED ALL USERS!\n"+"ERROR!!!");
     }
-    //home task №6. Get employee by email is null
+
+    /**
+     * @Autor Viacheslav Korbut
+     * home task №6. Get employee by email is null
+     */
     @GetMapping("/users/emailsN")
     @ResponseStatus(HttpStatus.OK)
     public List<Employee> getEmployeeByEmailIsNull(){
         return employeeSearchService.getEmployeeByEmailIsNull();
     }
+    /**
+     * @Autor Viacheslav Korbut
+     * home task №6. Get employee by lower case country
+     */
     @GetMapping("/users/countryS/")
     @ResponseStatus(HttpStatus.OK)
     public List<Employee> getEmployeeByLowerCaseCountry(){

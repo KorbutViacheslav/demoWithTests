@@ -3,7 +3,7 @@ package com.example.demowithtests;
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.dto.EmployeeDto;
 import com.example.demowithtests.service.EmployeeService;
-import com.example.demowithtests.util.config.EmployeeConverter;
+import com.example.demowithtests.util.config.mapstruct.EmployeeMapper;
 import com.example.demowithtests.web.EmployeeController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -51,7 +51,7 @@ public class ControllerTests {
     EmployeeService service;
 
     @MockBean
-    EmployeeConverter employeeConverter;
+    EmployeeMapper employeeConverter;
 
     @Autowired
     private MockMvc mockMvc;
@@ -66,8 +66,8 @@ public class ControllerTests {
         response.email = "mail@mail.com";
         var employee = Employee.builder().id(1).name("Mike").email("mail@mail.com").build();
 
-        when(employeeConverter.toDto(any(Employee.class))).thenReturn(response);
-        when(employeeConverter.fromDto(any(EmployeeDto.class))).thenReturn(employee);
+        when(employeeConverter.toEmployeeDto(any(Employee.class))).thenReturn(response);
+        when(employeeConverter.toEmployee(any(EmployeeDto.class))).thenReturn(employee);
         when(service.create(any(Employee.class))).thenReturn(employee);
 
         MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders
@@ -118,7 +118,7 @@ public class ControllerTests {
                 .name("Mike")
                 .build();
 
-        when(employeeConverter.toDto(any(Employee.class))).thenReturn(response);
+        when(employeeConverter.toEmployeeDto(any(Employee.class))).thenReturn(response);
         when(service.getById(1)).thenReturn(employee);
 
         MockHttpServletRequestBuilder mockRequest = get("/api/users/1");
@@ -138,8 +138,8 @@ public class ControllerTests {
         response.id = 1;
         var employee = Employee.builder().id(1).build();
 
-        when(employeeConverter.toDto(any(Employee.class))).thenReturn(response);
-        when(employeeConverter.fromDto(any(EmployeeDto.class))).thenReturn(employee);
+        when(employeeConverter.toEmployeeDto(any(Employee.class))).thenReturn(response);
+        when(employeeConverter.toEmployee(any(EmployeeDto.class))).thenReturn(employee);
         when(service.updateById(eq(1), any(Employee.class))).thenReturn(employee);
 
         MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders

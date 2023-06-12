@@ -33,7 +33,19 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
     Page<Employee> findByCountryContaining(String country, Pageable pageable);
 
-    //home task №6. Get employee by email is null
+    /**
+     * @Autor Viacheslav Korbut
+     * home task №6. Get employee by email is null
+     * can be used: @Query(value = "SELECT * FROM users WHERE email IS NULL", nativeQuery = true)
+     */
     List<Employee> findByEmailIsNull();
+
+    /**
+     * @Autor Viacheslav Korbut
+     * home task №6. Get employee by lower case country
+     */
+    @Query(value = "SELECT * FROM users WHERE ASCII(SUBSTRING(country, 1, 1)) BETWEEN 97 AND 122",
+            nativeQuery = true)
+    List<Employee> findEmployeesByLowerCaseCountry();
 
 }

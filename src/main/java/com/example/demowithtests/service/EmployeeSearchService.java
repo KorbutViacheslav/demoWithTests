@@ -38,7 +38,15 @@ public interface EmployeeSearchService {
 
     List<Employee> filterByCountry(String country);
 
-    //home task №6. Get employee by email is null
+    /**
+     * @Autor Viacheslav Korbut
+     * home task №6. Get employee by email is null
+     */
     List<Employee> getEmployeeByEmailIsNull();
+
+    /**
+     * @Autor Viacheslav Korbut
+     * home task №6. Get employee by lower case country
+     */
     List<Employee> getByLowerCaseCountry();
 }

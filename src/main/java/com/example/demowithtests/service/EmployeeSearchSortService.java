@@ -85,16 +85,23 @@ public class EmployeeSearchSortService implements EmployeeSearchService {
         return employeeRepository.findByCountry(country);
     }
 
-    //home task №6. Get employee by email is null
+    /**
+     * @Autor Viacheslav Korbut
+     * home task №6. Get employee by email is null
+     */
     @Override
     public List<Employee> getEmployeeByEmailIsNull() {
         return employeeRepository.findByEmailIsNull();
     }
+
+    /**
+     * @Autor Viacheslav Korbut
+     * home task №6. Get employee by lower case country
+     */
     @Override
     public List<Employee> getByLowerCaseCountry() {
-        return employeeCRUDService.getAll().stream()
-                .filter(e -> Character.isLowerCase(e.getCountry().charAt(0)))
-                .peek(e-> e.setCountry(StringUtils.capitalize(e.getCountry())))
+        return employeeRepository.findEmployeesByLowerCaseCountry()
+                .stream().peek(e -> e.setCountry(StringUtils.capitalize(e.getCountry())))
                 .collect(Collectors.toList());
     }
 
