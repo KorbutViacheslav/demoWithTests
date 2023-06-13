@@ -55,8 +55,9 @@ public class EmployeeController {
     //Save users to database
     @PostMapping("/usersS")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<String> saveEmployee1(@RequestBody Employee employee) {
-        EmployeeReadDto readDto = employeeMapper.toReadDto(employeeService.create(employee));
+    public ResponseEntity<String> saveEmployee1(@RequestBody EmployeeDto employeeDto) {
+        Employee e=employeeMapper.toEmployee(employeeDto);
+        EmployeeReadDto readDto = employeeMapper.toReadDto(employeeService.create(e));
         String massage = "The new employee is successfully created and added to database.\n" + readDto.toString();
         return ResponseEntity.ok(massage);
     }
@@ -163,7 +164,7 @@ public class EmployeeController {
     }
 
     /**
-     * @Autor Viacheslav Korbut
+     * @implNote
      * home task №6. Get employee by email is null
      * home task №7. Remake the return method of the EmployeeReadDto list
      */
@@ -174,7 +175,7 @@ public class EmployeeController {
     }
 
     /**
-     * @Autor Viacheslav Korbut
+     * @implNote
      * home task №6. Get employee by lower case country
      * home task №7. Remake the return method of the EmployeeReadDto list
      */

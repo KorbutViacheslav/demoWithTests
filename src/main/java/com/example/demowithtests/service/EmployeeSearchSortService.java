@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -33,14 +34,11 @@ public class EmployeeSearchSortService implements EmployeeSearchService {
     @Override
     public List<String> getAllEmployeeCountry() {
         log.info("getAllEmployeeCountry() - start:");
+
         List<Employee> employeeList = employeeRepository.findAll();
         List<String> countries = employeeList.stream()
                 .map(Employee::getCountry)
                 .collect(Collectors.toList());
-        /*List<String> countries = employeeList.stream()
-                .map(Employee::getCountry)
-                //.sorted(Comparator.naturalOrder())
-                .collect(Collectors.toList());*/
 
         log.info("getAllEmployeeCountry() - end: countries = {}", countries);
         return countries;
@@ -86,23 +84,33 @@ public class EmployeeSearchSortService implements EmployeeSearchService {
     }
 
     /**
-     * @Autor Viacheslav Korbut
-     * home task №6. Get employee by email is null
+     * @implNote home task №6. Get employee by email is null
      */
     @Override
     public List<Employee> getEmployeeByEmailIsNull() {
-        return employeeRepository.findByEmailIsNull();
+        log.debug("getEmployeeByEmailIsNull() EmployeeSearchSortService - start");
+        List<Employee> employees = employeeRepository.findByEmailIsNull();
+        if (employees.isEmpty()) {
+            throw new EntityNotFoundException("Employees not found!");
+        }
+        log.debug("getEmployeeByEmailIsNull() EmployeeSearchSortService - end");
+        return employees;
     }
 
     /**
-     * @Autor Viacheslav Korbut
-     * home task №6. Get employee by lower case country
+     * @implNote home task №6. Get employee by lower case country
      */
     @Override
     public List<Employee> getByLowerCaseCountry() {
-        return employeeRepository.findEmployeesByLowerCaseCountry()
+        log.debug("getByLowerCaseCountry() EmployeeSearchSortService - start");
+        List<Employee> employees = employeeRepository.findEmployeesByLowerCaseCountry()
                 .stream().peek(e -> e.setCountry(StringUtils.capitalize(e.getCountry())))
                 .collect(Collectors.toList());
+        if (employees.isEmpty()) {
+            throw new EntityNotFoundException("Employees not found!");
+        }
+        log.debug("getByLowerCaseCountry() EmployeeSearchSortService - end");
+        return employees;
     }
 
     private List<Sort.Order> createSortOrder(List<String> sortList, String sortDirection) {
