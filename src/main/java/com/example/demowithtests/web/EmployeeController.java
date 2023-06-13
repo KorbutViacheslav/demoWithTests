@@ -48,35 +48,32 @@ public class EmployeeController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND. Specified employee request not found."),
             @ApiResponse(responseCode = "409", description = "Employee already exists")})
     public EmployeeDto saveEmployee(@RequestBody @Valid EmployeeDto requestForSave) {
-
         var employee = employeeMapper.toEmployee(requestForSave);
-        var createdEmployee = employeeService.create(employee);
-        var dto = employeeMapper.toEmployeeDto(createdEmployee);
-        return dto;
+        return employeeMapper.toEmployeeDto(employeeService.create(employee));
     }
+
     //Save users to database
     @PostMapping("/usersS")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<String> saveEmployee1(@RequestBody Employee employee) {
-        employeeService.create(employee);
-        String massage = "The new employee is successfully created and added to database.\n"+ employee.toString();
+        EmployeeReadDto readDto = employeeMapper.toReadDto(employeeService.create(employee));
+        String massage = "The new employee is successfully created and added to database.\n" + readDto.toString();
         return ResponseEntity.ok(massage);
     }
 
     //Get list all users
     @GetMapping("/users")
     @ResponseStatus(HttpStatus.OK)
-    public List<Employee> getAllUsers() {
-        return employeeService.getAll();
+    public List<EmployeeReadDto> getAllUsers() {
+        return employeeMapper.toListEmployeeReadDto(employeeService.getAll());
     }
 
     @GetMapping("/users/p")
     @ResponseStatus(HttpStatus.OK)
-    public Page<Employee> getPage(@RequestParam(defaultValue = "0") int page,
-                                  @RequestParam(defaultValue = "3") int size
-    ) {
+    public Page<EmployeeReadDto> getPage(@RequestParam(defaultValue = "0") int page,
+                                         @RequestParam(defaultValue = "2") int size) {
         Pageable paging = PageRequest.of(page, size);
-        return employeeService.getAllWithPagination(paging);
+        return employeeService.getAllWithPagination(paging).map(employeeMapper::toReadDto);
     }
 
     //Get user by id
@@ -84,7 +81,7 @@ public class EmployeeController {
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "This is endpoint returned a employee by his id.", description = "Create request to read a employee by id", tags = {"Employee"})
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "OK. pam pam param."),
+            @ApiResponse(responseCode = "201", description = "Successful. pam pam param."),
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND. Specified employee request not found."),
             @ApiResponse(responseCode = "409", description = "Employee already exists")})
@@ -100,10 +97,11 @@ public class EmployeeController {
     //Update user
     @PutMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> refreshEmployee(@PathVariable("id") Integer id, @RequestBody Employee employee) {
-        Employee e=employeeService.updateById(id, employee);
-        String massage="Employee was successful update!\n";
-        return ResponseEntity.ok(massage+e.toString());
+    public ResponseEntity<String> refreshEmployee(@PathVariable("id") Integer id, @RequestBody @Valid EmployeeDto employeeDto) {
+        Employee employee = employeeService.updateById(id, employeeMapper.toEmployee(employeeDto));
+        EmployeeReadDto readDto = employeeMapper.toReadDto(employee);
+        String massage = "Employee was successful update!\n";
+        return ResponseEntity.ok(massage + readDto.toString());
     }
 
     //Remove by id
@@ -124,14 +122,13 @@ public class EmployeeController {
 
     @GetMapping("/users/country")
     @ResponseStatus(HttpStatus.OK)
-    public Page<Employee> findByCountry(@RequestParam(required = false) String country,
-                                        @RequestParam(defaultValue = "0") int page,
-                                        @RequestParam(defaultValue = "3") int size,
-                                        @RequestParam(defaultValue = "") List<String> sortList,
-                                        @RequestParam(defaultValue = "DESC") Sort.Direction sortOrder) {
-        //Pageable paging = PageRequest.of(page, size);
-        //Pageable paging = PageRequest.of(page, size, Sort.by("name").ascending());
-        return employeeSearchService.findByCountryContaining(country, page, size, sortList, sortOrder.toString());
+    public Page<EmployeeReadDto> findByCountry(@RequestParam(required = false) String country,
+                                               @RequestParam(defaultValue = "0") int page,
+                                               @RequestParam(defaultValue = "3") int size,
+                                               @RequestParam(defaultValue = "") List<String> sortList,
+                                               @RequestParam(defaultValue = "DESC") Sort.Direction sortOrder) {
+        return employeeSearchService.findByCountryContaining(country, page, size, sortList, sortOrder.toString())
+                .map(employeeMapper::toReadDto);
     }
 
     @GetMapping("/users/c")
@@ -154,32 +151,36 @@ public class EmployeeController {
 
     @GetMapping("/users/countryBy")
     @ResponseStatus(HttpStatus.OK)
-    public List<Employee> getByCountry(@RequestParam(required = true) String country) {
-        return employeeSearchService.filterByCountry(country);
+    public List<EmployeeReadDto> getByCountry(@RequestParam(required = true) String country) {
+        return employeeMapper.toListEmployeeReadDto(employeeSearchService.filterByCountry(country));
     }
+
     @DeleteMapping("/usersD")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> deleteAllAdmin(){
+    public ResponseEntity<String> deleteAllAdmin() {
         employeeCRUDService.removeAllAdmin();
-        return ResponseEntity.ok("DELETED ALL USERS!\n"+"ERROR!!!");
+        return ResponseEntity.ok("DELETED ALL USERS!\n" + "ERROR!!!");
     }
 
     /**
      * @Autor Viacheslav Korbut
      * home task №6. Get employee by email is null
+     * home task №7. Remake the return method of the EmployeeReadDto list
      */
     @GetMapping("/users/emailsN")
     @ResponseStatus(HttpStatus.OK)
-    public List<Employee> getEmployeeByEmailIsNull(){
-        return employeeSearchService.getEmployeeByEmailIsNull();
+    public List<EmployeeReadDto> getEmployeeByEmailIsNull() {
+        return employeeMapper.toListEmployeeReadDto(employeeSearchService.getEmployeeByEmailIsNull());
     }
+
     /**
      * @Autor Viacheslav Korbut
      * home task №6. Get employee by lower case country
+     * home task №7. Remake the return method of the EmployeeReadDto list
      */
     @GetMapping("/users/countryS/")
     @ResponseStatus(HttpStatus.OK)
-    public List<Employee> getEmployeeByLowerCaseCountry(){
-        return employeeSearchService.getByLowerCaseCountry();
+    public List<EmployeeReadDto> getEmployeeByLowerCaseCountry() {
+        return employeeMapper.toListEmployeeReadDto(employeeSearchService.getByLowerCaseCountry());
     }
 }

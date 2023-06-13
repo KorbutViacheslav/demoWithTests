@@ -18,6 +18,5 @@ public class AddressDto {
 
     public String street;
 
-    //todo: dfhgjkdfhg Jira - 5544
     public Date date = Date.from(Instant.now());
 }
