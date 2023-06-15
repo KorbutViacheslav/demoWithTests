@@ -3,6 +3,7 @@ package com.example.demowithtests;
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.domain.Gender;
 import com.example.demowithtests.dto.EmployeeDto;
+import com.example.demowithtests.dto.EmployeeReadDto;
 import com.example.demowithtests.service.EmployeeSearchService;
 import com.example.demowithtests.service.EmployeeService;
 import com.example.demowithtests.util.config.mapstruct.EmployeeMapper;
@@ -27,6 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,17 +39,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.Matchers.containsString;
 
 /**
  * @author Viacheslav Korbut
  * @implNote home task №8.
  * 1.Import static ArgumentMatchers.
- * 2. Fix MockHttpServletRequestBuilder rebase to mockMvc in createPassTest().
- * 3. Init employee for @BeforeEach.
+ * 2. Fix MockHttpServletRequestBuilder rebase to mockMvc in createPassTest(), getPassByIdTest(), deletePassTest().
+ * 3. Init employee, employeeDto, employeeReadDto for @BeforeEach.
+ * 4. Fix getPassByIdTest().
+ * 5. Fix deletePassTest().
+ * 6. Created extract methods. Customized employee mapping behavior.
  */
 
 @ExtendWith(SpringExtension.class)
@@ -66,27 +71,35 @@ public class ControllerTests {
     @MockBean
     EmployeeMapper employeeConverter;
     private Employee employee;
+    private EmployeeDto eDto;
+    private EmployeeReadDto employeeReadDto;
 
     @BeforeEach
     void setUp() {
         employee = Employee.builder()
                 .id(1).name("Mark").country("UK").email("test@mail.com").gender(Gender.M).deleted(Boolean.FALSE)
                 .build();
+
+        eDto = new EmployeeDto();
+        eDto.id = 1;
+        eDto.name = "Mark";
+        eDto.email = "test@mail.com";
+        eDto.country = "UK";
+        eDto.gender = Gender.M;
+
+        employeeReadDto=new EmployeeReadDto();
+        employeeReadDto.name="Mark";
+        employeeReadDto.email = "test@mail.com";
+        employeeReadDto.country = "UK";
+        employeeReadDto.gender = Gender.M;
     }
 
     @Test
     @DisplayName("POST /api/users")
     @WithMockUser(roles = "ADMIN")
     public void createPassTest() throws Exception {
-        var response = new EmployeeDto();
-        response.id = 1;
-        response.name = "Mark";
-        response.email = "test@mail.com";
-        response.country = "UK";
-        response.gender = Gender.M;
-
-        when(employeeConverter.toEmployeeDto(any(Employee.class))).thenReturn(response);
-        when(employeeConverter.toEmployee(any(EmployeeDto.class))).thenReturn(employee);
+        extractedToEmployeeDto();
+        extractedToEmployee();
         when(service.create(any(Employee.class))).thenReturn(employee);
 
         mockMvc.perform(post("/api/users")
@@ -95,7 +108,11 @@ public class ControllerTests {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(1)));
 
-        verify(service).create(any());
+        verify(service).create(any(Employee.class));
+    }
+
+    private void extractedToEmployeeDto() {
+        when(employeeConverter.toEmployeeDto(any(Employee.class))).thenReturn(eDto);
     }
 
     @Test
@@ -128,20 +145,13 @@ public class ControllerTests {
     @DisplayName("GET /api/users/{id}")
     @WithMockUser(roles = "USER")
     public void getPassByIdTest() throws Exception {
-        var response = new EmployeeDto();
-        var employee = Employee.builder()
-                .id(1)
-                .name("Mike")
-                .build();
 
-        when(employeeConverter.toEmployeeDto(any(Employee.class))).thenReturn(response);
+        extractedToReadDto();
         when(service.getById(1)).thenReturn(employee);
 
-        MockHttpServletRequestBuilder mockRequest = get("/api/users/1");
-
-        mockMvc.perform(mockRequest)
+        mockMvc.perform(get("/api/users/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", is("Mike")));
+                .andExpect(jsonPath("$.name", is("Mark")));
 
         verify(service).getById(anyInt());
     }
@@ -150,24 +160,27 @@ public class ControllerTests {
     @DisplayName("PUT /api/users/{id}")
     @WithMockUser(roles = "ADMIN")
     public void updatePassByIdTest() throws Exception {
-        var response = new EmployeeDto();
-        response.id = 1;
-        var employee = Employee.builder().id(1).build();
 
-        when(employeeConverter.toEmployeeDto(any(Employee.class))).thenReturn(response);
-        when(employeeConverter.toEmployee(any(EmployeeDto.class))).thenReturn(employee);
+        extractedToEmployee();
+        extractedToReadDto();
         when(service.updateById(eq(1), any(Employee.class))).thenReturn(employee);
 
-        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders
-                .put("/api/users/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(employee));
-
-        mockMvc.perform(mockRequest)
+        mockMvc.perform(put("/api/users/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(employee)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(1)));
+                .andExpect(content().string(containsString("Employee was successful update!")))
+                .andExpect(content().string(containsString("Mark")));
 
         verify(service).updateById(eq(1), any(Employee.class));
+    }
+
+    private void extractedToReadDto() {
+        when(employeeConverter.toReadDto(any(Employee.class))).thenReturn(employeeReadDto);
+    }
+
+    private void extractedToEmployee() {
+        when(employeeConverter.toEmployee(any(EmployeeDto.class))).thenReturn(employee);
     }
 
     @Test
@@ -177,11 +190,8 @@ public class ControllerTests {
 
         doNothing().when(service).removeById(1);
 
-        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders
-                .patch("/api/users/1");
-
-        mockMvc.perform(mockRequest)
-                .andExpect(status().isNoContent());
+        mockMvc.perform(patch("/api/users/1"))
+                .andExpect(status().isOk());
 
         verify(service).removeById(1);
     }
