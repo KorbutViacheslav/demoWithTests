@@ -4,6 +4,8 @@ import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.domain.Gender;
 import com.example.demowithtests.repository.EmployeeRepository;
 import com.example.demowithtests.service.EmployeeCRUDService;
+import com.example.demowithtests.service.EmployeeSearchService;
+import com.example.demowithtests.service.EmployeeSearchSortService;
 import com.example.demowithtests.util.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,16 +21,14 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+
 /**
  * @author Viacheslav Korbut
- * @implNote
- * home task №8.
+ * @implNote home task №8.
  * 1. Import static ArgumentMatchers.
  * 2. Fix deleteEmployeeTest().
  */
@@ -43,6 +43,9 @@ public class ServiceTests {
     @InjectMocks
     private EmployeeCRUDService service;
 
+    @InjectMocks
+    private EmployeeSearchSortService searchService;
+
     private Employee employee;
 
     @BeforeEach
@@ -51,8 +54,8 @@ public class ServiceTests {
                 .builder()
                 .id(1)
                 .name("Mark")
-                .country("UK")
-                .email("test@mail.com")
+                .country("hungary")
+                //.email("test@mail.com")
                 .gender(Gender.M)
                 .deleted(Boolean.FALSE)
                 .build();
@@ -119,4 +122,31 @@ public class ServiceTests {
         assertEquals(employee.isDeleted(), Boolean.TRUE);
         verify(employeeRepository).save(employee);
     }
+
+    /**
+     * @implNote home task №8. My tests.
+     */
+    @Test
+    @DisplayName("Get employee by email if is null")
+    void getEmployeeByEmailIsNullTest() {
+
+        when(employeeRepository.findByEmailIsNull()).thenReturn(List.of(employee));
+
+        var list = employeeRepository.findByEmailIsNull();
+        assertAll(
+                () -> assertThat(list.size()).isGreaterThan(0),
+                () -> assertThat(list.get(0).getEmail()).isNull(),
+                () -> assertThat(list.get(0).getName()).isEqualTo("Mark")
+        );
+        // Перевірка, що findByEmailIsNull() було викликано лише один раз
+        verify(employeeRepository, times(1)).findByEmailIsNull();
+        // Перевірка, що інші методи не були викликані
+        verifyNoMoreInteractions(employeeRepository);
+    }
+    @Test
+    @DisplayName("Get employee by lower case country")
+    void getByLowerCaseCountryTest(){
+
+    }
+
 }
