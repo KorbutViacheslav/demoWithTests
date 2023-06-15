@@ -14,7 +14,15 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
+/**
+ * @author Viacheslav Korbut
+ * @implNote
+ * home task №8.
+ * 1. Import static assetThat.
+ *
+ */
 
 @DataJpaTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -43,9 +51,9 @@ public class RepositoryTests {
 
         employeeRepository.save(employee);
 
-        Assertions.assertThat(employee.getId()).isGreaterThan(0);
-        Assertions.assertThat(employee.getId()).isEqualTo(1);
-        Assertions.assertThat(employee.getName()).isEqualTo("Mark");
+        assertThat(employee.getId()).isGreaterThan(0);
+        assertThat(employee.getId()).isEqualTo(1);
+        assertThat(employee.getName()).isEqualTo("Mark");
     }
 
     @Test
@@ -55,8 +63,8 @@ public class RepositoryTests {
 
         var employee = employeeRepository.findById(1).orElseThrow();
 
-        Assertions.assertThat(employee.getId()).isEqualTo(1);
-        Assertions.assertThat(employee.getName()).isEqualTo("Mark");
+        assertThat(employee.getId()).isEqualTo(1);
+        assertThat(employee.getName()).isEqualTo("Mark");
     }
 
     @Test
@@ -66,7 +74,7 @@ public class RepositoryTests {
 
         var employeesList = employeeRepository.findAll();
 
-        Assertions.assertThat(employeesList.size()).isGreaterThan(0);
+        assertThat(employeesList.size()).isGreaterThan(0);
 
     }
 
@@ -81,7 +89,7 @@ public class RepositoryTests {
         employee.setName("Martin");
         var employeeUpdated = employeeRepository.save(employee);
 
-        Assertions.assertThat(employeeUpdated.getName()).isEqualTo("Martin");
+        assertThat(employeeUpdated.getName()).isEqualTo("Martin");
 
     }
 
@@ -113,7 +121,7 @@ public class RepositoryTests {
             employeeNull = optionalEmployee.orElseThrow();
         }
 
-        Assertions.assertThat(employeeNull).isNull();
+        assertThat(employeeNull).isNull();
     }
 
 }

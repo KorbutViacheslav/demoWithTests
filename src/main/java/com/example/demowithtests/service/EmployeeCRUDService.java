@@ -16,6 +16,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -108,20 +109,22 @@ public class EmployeeCRUDService implements EmployeeService {
             employeeRepository.save(employee);
         });
     }
-    public void removeAllAdmin(){
+
+    public void removeAllAdmin() {
         employeeRepository.deleteAll();
     }
 
-    private void comparisonEmployee(Employee employee) {
+    private boolean comparisonEmployee(Employee employee) {
         getAll().stream().filter(emp ->
-                        emp.getName().equals(employee.getName()) &&
-                                emp.getCountry().equals(employee.getCountry()) &&
-                                emp.getEmail().equals(employee.getEmail()) &&
-                                emp.getGender().equals(employee.getGender()))
+                        Objects.equals(emp.getName(), employee.getName()) &&
+                                Objects.equals(emp.getCountry(), employee.getCountry()) &&
+                                Objects.equals(emp.getEmail(), employee.getEmail()) &&
+                                Objects.equals(emp.getGender(), employee.getGender()))
                 .findAny()
                 .ifPresent(emp -> {
                     throw new EmployeeContainsException();
                 });
+        return true;
     }
    /* public boolean isValid(Employee employee) {
         String regex = "^[0-9]{10}$";
