@@ -28,6 +28,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Arrays;
@@ -52,7 +53,8 @@ import static org.hamcrest.Matchers.containsString;
  * 3. Init employee, employeeDto, employeeReadDto for @BeforeEach.
  * 4. Fix getPassByIdTest().
  * 5. Fix deletePassTest().
- * 6. Created extract methods. Customized employee mapping behavior.
+ * 6. Fix testEntitySave().
+ * 7. Created extract methods. Customized employee mapping behavior.
  */
 
 @ExtendWith(SpringExtension.class)
@@ -87,8 +89,8 @@ public class ControllerTests {
         eDto.country = "UK";
         eDto.gender = Gender.M;
 
-        employeeReadDto=new EmployeeReadDto();
-        employeeReadDto.name="Mark";
+        employeeReadDto = new EmployeeReadDto();
+        employeeReadDto.name = "Mark";
         employeeReadDto.email = "test@mail.com";
         employeeReadDto.country = "UK";
         employeeReadDto.gender = Gender.M;
@@ -111,31 +113,21 @@ public class ControllerTests {
         verify(service).create(any(Employee.class));
     }
 
-    private void extractedToEmployeeDto() {
-        when(employeeConverter.toEmployeeDto(any(Employee.class))).thenReturn(eDto);
-    }
 
     @Test
     @DisplayName("Entity POST /api/users")
     @WithMockUser(roles = "ADMIN")
     public void testEntitySave() throws Exception {
-        var employeeToBeReturn = Employee.builder()
-                .id(1)
-                .name("Mark")
-                .country("France")
-                .gender(Gender.M)
-                .build();
-        doReturn(employeeToBeReturn).when(service).create(any());
-        when(this.service.create(any(Employee.class))).thenReturn(employeeToBeReturn);
-        // Execute the POST request
-        MockHttpServletRequestBuilder mockRequest = post("/api/usersS")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(employeeToBeReturn));
-        mockMvc
-                .perform(mockRequest)
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", is(1)));
-        //.andReturn().getResponse();
+        extractedToEmployee();
+        extractedToReadDto();
+        when(this.service.create(any(Employee.class))).thenReturn(employee);
+
+        mockMvc.perform(post("/api/usersS")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(employee)))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("The new employee is successfully created and added to database.")));
+
 
         verify(this.service, times(1)).create(any(Employee.class));
         verifyNoMoreInteractions(this.service);
@@ -175,13 +167,6 @@ public class ControllerTests {
         verify(service).updateById(eq(1), any(Employee.class));
     }
 
-    private void extractedToReadDto() {
-        when(employeeConverter.toReadDto(any(Employee.class))).thenReturn(employeeReadDto);
-    }
-
-    private void extractedToEmployee() {
-        when(employeeConverter.toEmployee(any(EmployeeDto.class))).thenReturn(employee);
-    }
 
     @Test
     @DisplayName("PATCH /api/users/{id}")
@@ -223,6 +208,18 @@ public class ControllerTests {
         assertTrue(contentType.contains(MediaType.APPLICATION_JSON_VALUE));
         String responseContent = result.getResponse().getContentAsString();
         assertNotNull(responseContent);
+    }
+
+    private void extractedToReadDto() {
+        when(employeeConverter.toReadDto(any(Employee.class))).thenReturn(employeeReadDto);
+    }
+
+    private void extractedToEmployee() {
+        when(employeeConverter.toEmployee(any(EmployeeDto.class))).thenReturn(employee);
+    }
+
+    private void extractedToEmployeeDto() {
+        when(employeeConverter.toEmployeeDto(any(Employee.class))).thenReturn(eDto);
     }
 
 }
