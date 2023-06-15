@@ -40,9 +40,7 @@ public class RepositoryTests {
     @DisplayName("Save employee test")
     public void saveEmployeeTest() {
 
-        var employee = Employee.builder()
-                .name("Mark")
-                .country("England")
+        var employee = Employee.builder().name("Mark").country("England")
                 .addresses(new HashSet<>(Set.of(
                         Address
                                 .builder()
@@ -50,18 +48,9 @@ public class RepositoryTests {
                                 .build())))
                 .gender(Gender.M)
                 .build();
-        var e = Employee.builder()
-                .name("Adam")
-                .country("Israel")
-                .deleted(Boolean.FALSE)
-                .gender(Gender.M)
-                .deleted(Boolean.FALSE)
+        var e = Employee.builder().name("Adam").country("Israel").gender(Gender.M).deleted(Boolean.FALSE)
                 .build();
-        var eCountry = Employee.builder()
-                .name("Marselo")
-                .country("mexico")
-                .gender(Gender.M)
-                .deleted(Boolean.FALSE)
+        var eCountry = Employee.builder().name("Marselo").country("mexico").gender(Gender.M).deleted(Boolean.FALSE)
                 .build();
 
         employeeRepository.save(employee);
@@ -145,7 +134,9 @@ public class RepositoryTests {
     @Order(7)
     @DisplayName("Get employee by email if is null")
     void findByEmailIsNullTest() {
+
         var employees = employeeRepository.findByEmailIsNull();
+
         assertAll(
                 () -> assertThat(employees.size()).isGreaterThan(0),
                 () -> assertThat(employees.get(0).getName()).isEqualTo("Adam"),
@@ -156,7 +147,9 @@ public class RepositoryTests {
     @Order(8)
     @DisplayName("Get employee by lower case country")
     void findEmployeesByLowerCaseCountryTest() {
+
         var employees = employeeRepository.findEmployeesByLowerCaseCountry();
+
         assertAll(
                 () -> assertThat(employees.size()).isGreaterThan(0),
                 () -> assertThat(employees.get(0).getName()).isEqualTo("Marselo"),
@@ -166,7 +159,5 @@ public class RepositoryTests {
                     assertThat(employee.getCountry()).isEqualTo(employee.getCountry().toLowerCase());
                 })
         );
-
     }
-
 }

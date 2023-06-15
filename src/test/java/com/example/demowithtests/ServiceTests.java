@@ -53,23 +53,21 @@ public class ServiceTests {
 
     @BeforeEach
     void setUp() {
-        employee = Employee
-                .builder()
-                .id(1)
-                .name("Mark")
-                .country("hungary")
+        employee = Employee.builder().id(1).name("Mark").country("hungary").gender(Gender.M).deleted(Boolean.FALSE)
                 //.email("test@mail.com")
-                .gender(Gender.M)
-                .deleted(Boolean.FALSE)
                 .build();
     }
 
     @Test
     @DisplayName("Save employee test")
     public void whenSaveEmployee_shouldReturnEmployee() {
+
         when(employeeRepository.save(any(Employee.class))).thenReturn(employee);
+
         var created = service.create(employee);
+
         assertThat(created.getName()).isSameAs(employee.getName());
+
         verify(employeeRepository).save(employee);
     }
 
@@ -79,9 +77,11 @@ public class ServiceTests {
 
         Employee employee = new Employee();
         employee.setId(88);
+
         when(employeeRepository.findById(employee.getId())).thenReturn(Optional.of(employee));
-        Employee expected = service.getById(employee.getId());
-        assertThat(expected).isSameAs(employee);
+
+        assertThat(service.getById(employee.getId())).isSameAs(employee);
+
         verify(employeeRepository).findById(employee.getId());
     }
 
@@ -90,6 +90,7 @@ public class ServiceTests {
     public void should_throw_exception_when_employee_doesnt_exist() {
 
         when(employeeRepository.findById(anyInt())).thenThrow(ResourceNotFoundException.class);
+
         assertThrows(ResourceNotFoundException.class, () -> employeeRepository.findById(anyInt()));
     }
 
@@ -98,8 +99,9 @@ public class ServiceTests {
     public void readEmployeeByIdTest() {
 
         when(employeeRepository.findById(employee.getId())).thenReturn(Optional.of(employee));
-        Employee expected = service.getById(employee.getId());
-        assertThat(expected).isSameAs(employee);
+
+        assertThat(service.getById(employee.getId())).isSameAs(employee);
+
         verify(employeeRepository).findById(employee.getId());
     }
 
@@ -108,8 +110,11 @@ public class ServiceTests {
     public void readAllEmployeesTest() {
 
         when(employeeRepository.findAll()).thenReturn(List.of(employee));
+
         var list = employeeRepository.findAll();
+
         assertThat(list.size()).isGreaterThan(0);
+
         verify(employeeRepository).findAll();
     }
 
@@ -119,10 +124,13 @@ public class ServiceTests {
 
         when(employeeRepository.findById(employee.getId())).thenReturn(Optional.of(employee));
         when(employeeRepository.save(any(Employee.class))).thenReturn(employee);
+
         assertEquals(employee.isDeleted(), Boolean.FALSE);
 
         service.removeById(employee.getId());
+
         assertEquals(employee.isDeleted(), Boolean.TRUE);
+
         verify(employeeRepository).save(employee);
     }
 
@@ -147,13 +155,16 @@ public class ServiceTests {
     @Test
     @DisplayName("Get employee by email if is null - EntityNotFoundException")
     void getEmployeeByEmailIsNullThrowTest() {
+
         when(employeeRepository.findByEmailIsNull()).thenReturn(Collections.emptyList());
+
         assertThrows(EntityNotFoundException.class, () -> searchService.getEmployeeByEmailIsNull());
     }
 
     @Test
     @DisplayName("Get employee by lower case country")
     void getByLowerCaseCountryTest() {
+
         when(employeeRepository.findEmployeesByLowerCaseCountry()).thenReturn(List.of(employee));
 
         var list = employeeRepository.findEmployeesByLowerCaseCountry();
@@ -171,7 +182,9 @@ public class ServiceTests {
     @Test
     @DisplayName("Get employee by lower case country - EntityNotFoundException")
     void getByLowerCaseCountryThrowTest() {
+
         when(employeeRepository.findEmployeesByLowerCaseCountry()).thenReturn(Collections.emptyList());
+
         assertThrows(EntityNotFoundException.class, () -> searchService.getByLowerCaseCountry());
     }
 
