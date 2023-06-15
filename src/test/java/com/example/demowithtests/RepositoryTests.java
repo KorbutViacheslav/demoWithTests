@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @implNote
  * home task №8.
  * 1. Import static assetThat.
- *
  */
 
 @DataJpaTest

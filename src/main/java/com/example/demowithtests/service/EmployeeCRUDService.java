@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -50,7 +51,7 @@ public class EmployeeCRUDService implements EmployeeService {
                 .sorted(Comparator.comparing(Employee::getId))
                 .collect(Collectors.toList());
         if (employeeList.isEmpty()) {
-            throw new EntityNotFoundException("Employees not found!");
+            return Collections.emptyList();
         }
         return employeeList;
     }
@@ -120,7 +121,7 @@ public class EmployeeCRUDService implements EmployeeService {
                                 Objects.equals(emp.getCountry(), employee.getCountry()) &&
                                 Objects.equals(emp.getEmail(), employee.getEmail()) &&
                                 Objects.equals(emp.getGender(), employee.getGender()))
-                .findAny()
+                .findFirst()
                 .ifPresent(emp -> {
                     throw new EmployeeContainsException();
                 });

@@ -36,7 +36,7 @@ public class EmployeeController {
     private final EmployeeService employeeService;
     private final EmployeeSearchService employeeSearchService;
     private final EmployeeMapper employeeMapper;
-    private final EmployeeCRUDService employeeCRUDService;
+    //private final EmployeeCRUDService employeeCRUDService;
 
     //Save users to database(dto)
     @PostMapping("/users")
@@ -156,12 +156,12 @@ public class EmployeeController {
         return employeeMapper.toListEmployeeReadDto(employeeSearchService.filterByCountry(country));
     }
 
-    @DeleteMapping("/usersD")
+/*    @DeleteMapping("/usersD")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> deleteAllAdmin() {
         employeeCRUDService.removeAllAdmin();
         return ResponseEntity.ok("DELETED ALL USERS!\n" + "ERROR!!!");
-    }
+    }*/
 
     /**
      * @implNote

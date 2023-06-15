@@ -1,7 +1,9 @@
 package com.example.demowithtests;
 
 import com.example.demowithtests.domain.Employee;
+import com.example.demowithtests.domain.Gender;
 import com.example.demowithtests.dto.EmployeeDto;
+import com.example.demowithtests.service.EmployeeSearchService;
 import com.example.demowithtests.service.EmployeeService;
 import com.example.demowithtests.util.config.mapstruct.EmployeeMapper;
 import com.example.demowithtests.web.EmployeeController;
@@ -43,18 +45,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = EmployeeController.class)
 @DisplayName("Employee Controller Tests")
 public class ControllerTests {
-
     @Autowired
     ObjectMapper mapper;
-
-    @MockBean
-    EmployeeService service;
-
-    @MockBean
-    EmployeeMapper employeeConverter;
-
     @Autowired
     private MockMvc mockMvc;
+    @MockBean
+    EmployeeService service;
+    @MockBean
+    EmployeeSearchService employeeSearchService;
+    @MockBean
+    EmployeeMapper employeeConverter;
 
     @Test
     @DisplayName("POST /api/users")
@@ -64,7 +64,10 @@ public class ControllerTests {
         response.id = 1;
         response.name = "Mike";
         response.email = "mail@mail.com";
-        var employee = Employee.builder().id(1).name("Mike").email("mail@mail.com").build();
+        response.country = "UK";
+        response.gender = Gender.M;
+        var employee = Employee.builder().id(1).name("Mike").email("mail@mail.com").country("UK")
+                .gender(Gender.M).build();
 
         when(employeeConverter.toEmployeeDto(any(Employee.class))).thenReturn(response);
         when(employeeConverter.toEmployee(any(EmployeeDto.class))).thenReturn(employee);
@@ -77,8 +80,7 @@ public class ControllerTests {
 
         mockMvc.perform(mockRequest)
                 .andExpect(status().isCreated())
-               // .andExpect(jsonPath("$.id", is(1)));
-                       .andReturn();
+                .andExpect(jsonPath("$.id", is(1)));
 
         verify(service).create(any());
     }
@@ -90,7 +92,9 @@ public class ControllerTests {
         var employeeToBeReturn = Employee.builder()
                 .id(1)
                 .name("Mark")
-                .country("France").build();
+                .country("France")
+                .gender(Gender.M)
+                .build();
         doReturn(employeeToBeReturn).when(service).create(any());
         when(this.service.create(any(Employee.class))).thenReturn(employeeToBeReturn);
         // Execute the POST request
@@ -101,8 +105,8 @@ public class ControllerTests {
         mockMvc
                 .perform(mockRequest)
                 .andExpect(status().isCreated())
-                //.andExpect(jsonPath("$.id", is(1)))
-                .andReturn().getResponse();
+                .andExpect(jsonPath("$.id", is(1)));
+                //.andReturn().getResponse();
 
         verify(this.service, times(1)).create(any(Employee.class));
         verifyNoMoreInteractions(this.service);

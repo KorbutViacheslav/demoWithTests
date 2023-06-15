@@ -14,14 +14,24 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+/**
+ * @author Viacheslav Korbut
+ * @implNote
+ * home task №8.
+ * 1. Import static any.
+ * 2. Fix deleteEmployeeTest().
+ */
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Employee Service Tests")
@@ -44,14 +54,14 @@ public class ServiceTests {
                 .country("UK")
                 .email("test@mail.com")
                 .gender(Gender.M)
+                .deleted(Boolean.FALSE)
                 .build();
     }
 
     @Test
     @DisplayName("Save employee test")
     public void whenSaveEmployee_shouldReturnEmployee() {
-
-        when(employeeRepository.save(ArgumentMatchers.any(Employee.class))).thenReturn(employee);
+        when(employeeRepository.save(any(Employee.class))).thenReturn(employee);
         var created = service.create(employee);
         assertThat(created.getName()).isSameAs(employee.getName());
         verify(employeeRepository).save(employee);
@@ -102,7 +112,11 @@ public class ServiceTests {
     public void deleteEmployeeTest() {
 
         when(employeeRepository.findById(employee.getId())).thenReturn(Optional.of(employee));
+        when(employeeRepository.save(any(Employee.class))).thenReturn(employee);
+        assertEquals(employee.isDeleted(), Boolean.FALSE);
+
         service.removeById(employee.getId());
-        verify(employeeRepository).delete(employee);
+        assertEquals(employee.isDeleted(), Boolean.TRUE);
+        verify(employeeRepository).save(employee);
     }
 }
