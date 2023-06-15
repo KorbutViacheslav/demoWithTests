@@ -16,10 +16,11 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 /**
  * @author Viacheslav Korbut
- * @implNote
- * home task №8.
+ * @implNote home task №8.
  * 1. Import static assetThat.
  */
 
@@ -47,8 +48,23 @@ public class RepositoryTests {
                                 .build())))
                 .gender(Gender.M)
                 .build();
+        var e = Employee.builder()
+                .name("Adam")
+                .country("Israel")
+                .deleted(Boolean.FALSE)
+                .gender(Gender.M)
+                .deleted(Boolean.FALSE)
+                .build();
+        var eCountry = Employee.builder()
+                .name("Marselo")
+                .country("mexico")
+                .gender(Gender.M)
+                .deleted(Boolean.FALSE)
+                .build();
 
         employeeRepository.save(employee);
+        employeeRepository.save(e);
+        employeeRepository.save(eCountry);
 
         assertThat(employee.getId()).isGreaterThan(0);
         assertThat(employee.getId()).isEqualTo(1);
@@ -121,6 +137,38 @@ public class RepositoryTests {
         }
 
         assertThat(employeeNull).isNull();
+    }
+
+    /**
+     * @implNote home task №8. My tests.
+     * 1. Created another employee in first order with null email.(name = Adam)
+     * 2. Use assert all().
+     */
+    @Test
+    @Order(7)
+    @DisplayName("Get employee by email if is null")
+    void findByEmailIsNullTest() {
+        var employees = employeeRepository.findByEmailIsNull();
+        assertAll(
+                () -> assertThat(employees.size()).isGreaterThan(0),
+                () -> assertThat(employees.get(0).getName()).isEqualTo("Adam"),
+                () -> assertThat(employees.get(0).getId()).isEqualTo(2));
+    }
+    @Test
+    @Order(8)
+    @DisplayName("Get employee by lower case country")
+    void findEmployeesByLowerCaseCountryTest(){
+        var employees = employeeRepository.findEmployeesByLowerCaseCountry();
+        assertAll(
+                () -> assertThat(employees.size()).isGreaterThan(0),
+                () -> assertThat(employees.get(0).getName()).isEqualTo("Marselo"),
+                () -> assertThat(employees.get(0).getId()).isEqualTo(3),
+                () -> employees.forEach(employee -> {
+                    assertThat(employee.getCountry()).isNotNull().isNotEmpty();
+                    assertThat(employee.getCountry()).isEqualTo(employee.getCountry().toLowerCase());
+                })
+        );
+
     }
 
 }

@@ -35,7 +35,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
     /**
      * @implNote
-     * home task №6. Get employee by email is null
+     * home task №6. Get employee by email if is null
      */
     @Query(value = "SELECT * FROM users WHERE email IS NULL AND deleted = false", nativeQuery = true)
     List<Employee> findByEmailIsNull();
