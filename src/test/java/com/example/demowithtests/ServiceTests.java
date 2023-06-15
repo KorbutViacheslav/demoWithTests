@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
  * @author Viacheslav Korbut
  * @implNote
  * home task №8.
- * 1. Import static any.
+ * 1. Import static ArgumentMatchers.
  * 2. Fix deleteEmployeeTest().
  */
 

@@ -8,6 +8,7 @@ import com.example.demowithtests.service.EmployeeService;
 import com.example.demowithtests.util.config.mapstruct.EmployeeMapper;
 import com.example.demowithtests.web.EmployeeController;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,8 +38,17 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+/**
+ * @author Viacheslav Korbut
+ * @implNote home task №8.
+ * 1.Import static ArgumentMatchers.
+ * 2. Fix MockHttpServletRequestBuilder rebase to mockMvc in createPassTest().
+ * 3. Init employee for @BeforeEach.
+ */
 
 @ExtendWith(SpringExtension.class)
 @ExtendWith(MockitoExtension.class)
@@ -55,6 +65,14 @@ public class ControllerTests {
     EmployeeSearchService employeeSearchService;
     @MockBean
     EmployeeMapper employeeConverter;
+    private Employee employee;
+
+    @BeforeEach
+    void setUp() {
+        employee = Employee.builder()
+                .id(1).name("Mark").country("UK").email("test@mail.com").gender(Gender.M).deleted(Boolean.FALSE)
+                .build();
+    }
 
     @Test
     @DisplayName("POST /api/users")
@@ -62,23 +80,18 @@ public class ControllerTests {
     public void createPassTest() throws Exception {
         var response = new EmployeeDto();
         response.id = 1;
-        response.name = "Mike";
-        response.email = "mail@mail.com";
+        response.name = "Mark";
+        response.email = "test@mail.com";
         response.country = "UK";
         response.gender = Gender.M;
-        var employee = Employee.builder().id(1).name("Mike").email("mail@mail.com").country("UK")
-                .gender(Gender.M).build();
 
         when(employeeConverter.toEmployeeDto(any(Employee.class))).thenReturn(response);
         when(employeeConverter.toEmployee(any(EmployeeDto.class))).thenReturn(employee);
         when(service.create(any(Employee.class))).thenReturn(employee);
 
-        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders
-                .post("/api/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(mapper.writeValueAsString(employee));
-
-        mockMvc.perform(mockRequest)
+        mockMvc.perform(post("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(employee)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(1)));
 
@@ -98,15 +111,14 @@ public class ControllerTests {
         doReturn(employeeToBeReturn).when(service).create(any());
         when(this.service.create(any(Employee.class))).thenReturn(employeeToBeReturn);
         // Execute the POST request
-        MockHttpServletRequestBuilder mockRequest = MockMvcRequestBuilders
-                .post("/api/usersS")
+        MockHttpServletRequestBuilder mockRequest = post("/api/usersS")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(mapper.writeValueAsString(employeeToBeReturn));
         mockMvc
                 .perform(mockRequest)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(1)));
-                //.andReturn().getResponse();
+        //.andReturn().getResponse();
 
         verify(this.service, times(1)).create(any(Employee.class));
         verifyNoMoreInteractions(this.service);
