@@ -4,7 +4,6 @@ import com.example.demowithtests.domain.Address;
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.domain.Gender;
 import com.example.demowithtests.repository.EmployeeRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -14,14 +13,17 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 /**
  * @author Viacheslav Korbut
- * @implNote home task №8.
- * 1. Import static assetThat.
+ * @implNote home task №8. RepositoryTests.
+ * 1. Import static Assertions.
+ * 2. Created another employees in first order with null email and first lower case country.
+ * 3. Used assert all().
+ * 4. Created findByEmailIsNullTest and write 3 tests.
+ * 5. Created findEmployeesByLowerCaseCountryTest and write 5 tests.
  */
 
 @DataJpaTest
@@ -139,11 +141,6 @@ public class RepositoryTests {
         assertThat(employeeNull).isNull();
     }
 
-    /**
-     * @implNote home task №8. My tests.
-     * 1. Created another employee in first order with null email.(name = Adam)
-     * 2. Use assert all().
-     */
     @Test
     @Order(7)
     @DisplayName("Get employee by email if is null")
@@ -154,10 +151,11 @@ public class RepositoryTests {
                 () -> assertThat(employees.get(0).getName()).isEqualTo("Adam"),
                 () -> assertThat(employees.get(0).getId()).isEqualTo(2));
     }
+
     @Test
     @Order(8)
     @DisplayName("Get employee by lower case country")
-    void findEmployeesByLowerCaseCountryTest(){
+    void findEmployeesByLowerCaseCountryTest() {
         var employees = employeeRepository.findEmployeesByLowerCaseCountry();
         assertAll(
                 () -> assertThat(employees.size()).isGreaterThan(0),
