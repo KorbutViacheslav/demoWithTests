@@ -124,18 +124,6 @@
             <artifactId>flyway-core</artifactId>
             <version>9.3.1</version>
         </dependency>
-        <!-- mapstruct -->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>1.5.1.Final</version>
-        </dependency>
-        <!-- mapstruct-processor -->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
-            <version>1.5.1.Final</version>
-        </dependency>
 
     </dependencies>
 

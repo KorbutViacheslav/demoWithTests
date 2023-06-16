@@ -179,7 +179,7 @@ public class EmployeeController {
      * home task №6. Get employee by lower case country
      * home task №7. Remake the return method of the EmployeeReadDto list
      */
-    @GetMapping("/users/countryS/")
+    @GetMapping("/users/countryS")
     @ResponseStatus(HttpStatus.OK)
     public List<EmployeeReadDto> getEmployeeByLowerCaseCountry() {
         return employeeMapper.toListEmployeeReadDto(employeeSearchService.getByLowerCaseCountry());

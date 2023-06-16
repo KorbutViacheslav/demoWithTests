@@ -8,7 +8,6 @@ import com.example.demowithtests.service.EmployeeSearchService;
 import com.example.demowithtests.service.EmployeeService;
 import com.example.demowithtests.util.config.mapstruct.EmployeeMapper;
 import com.example.demowithtests.web.EmployeeController;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,15 +23,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
@@ -43,7 +41,6 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Viacheslav Korbut
@@ -55,6 +52,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  * 5. Fix deletePassTest().
  * 6. Fix testEntitySave().
  * 7. Created extract methods. Customized employee mapping behavior.
+ * 8. Created findByEmailIsNullTest and implemented tests.
+ * 9. Created findEmployeesByLowerCaseCountryTest and implemented tests.
  */
 
 @ExtendWith(SpringExtension.class)
@@ -79,20 +78,20 @@ public class ControllerTests {
     @BeforeEach
     void setUp() {
         employee = Employee.builder()
-                .id(1).name("Mark").country("UK").email("test@mail.com").gender(Gender.M).deleted(Boolean.FALSE)
+                .id(1).name("Mark").country("uK").email(null).gender(Gender.M).deleted(Boolean.FALSE)
                 .build();
 
         eDto = new EmployeeDto();
         eDto.id = 1;
         eDto.name = "Mark";
-        eDto.email = "test@mail.com";
-        eDto.country = "UK";
+        //eDto.email = "test@mail.com";
+        eDto.country = "uK";
         eDto.gender = Gender.M;
 
         employeeReadDto = new EmployeeReadDto();
         employeeReadDto.name = "Mark";
-        employeeReadDto.email = "test@mail.com";
-        employeeReadDto.country = "UK";
+        //employeeReadDto.email = "test@mail.com";
+        employeeReadDto.country = "uK";
         employeeReadDto.gender = Gender.M;
     }
 
@@ -129,7 +128,6 @@ public class ControllerTests {
                         .content(mapper.writeValueAsString(employee)))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("The new employee is successfully created and added to database.")));
-
 
         verify(this.service, times(1)).create(any(Employee.class));
         verifyNoMoreInteractions(this.service);
@@ -191,7 +189,7 @@ public class ControllerTests {
         var employee1 = Employee.builder().id(1).name("John").country("US").build();
         var employee2 = Employee.builder().id(2).name("Jane").country("UK").build();
         var employee3 = Employee.builder().id(3).name("Bob").country("US").build();
-        List<Employee> list = Arrays.asList(employee1, employee2, employee3);
+        List<Employee> list = asList(employee1, employee2, employee3);
         Page<Employee> employeesPage = new PageImpl<>(list);
         Pageable pageable = PageRequest.of(0, 5);
 
@@ -215,29 +213,36 @@ public class ControllerTests {
     @DisplayName("GET /users/emailsN")
     @WithMockUser(roles = "USER")
     void getEmployeeByEmailIsNullTest() throws Exception {
-        var employee1 = Employee.builder()
-                .id(1).name("Mark").country("USA").gender(Gender.M).deleted(Boolean.FALSE)
-                .build();
-        var employee2 = Employee.builder()
-                .id(2).name("Jane").country("hungary").email("simple@gmail.com").gender(Gender.M).deleted(Boolean.FALSE)
-                .build();
-        var employee3 = Employee.builder()
-                .id(3).name("Bob").country("roman").gender(Gender.M).deleted(Boolean.FALSE)
-                .build();
-        var list = Arrays.asList(employee1, employee2, employee3);
-        List<EmployeeReadDto> readDtos= Collections.emptyList();
-        when(employeeConverter.toReadDto(any(Employee.class))).thenReturn(employeeReadDto);
-        when(employeeConverter.toListEmployeeReadDto(eq(list))).thenReturn(readDtos);
-        readDtos = employeeConverter.toListEmployeeReadDto(list);
+
+        List<Employee> list = Collections.emptyList();
+        List<EmployeeReadDto> readDtos = asList(employeeReadDto);
+
+        doReturn(readDtos).when(employeeConverter).toListEmployeeReadDto(eq(list));
         when(employeeSearchService.getEmployeeByEmailIsNull()).thenReturn(list);
-        //assertThat(employeeSearchService.getEmployeeByEmailIsNull().get(0).getName()).isEqualTo("Mark");
-        //assertThat(employeeSearchService.getEmployeeByEmailIsNull().size()).isEqualTo(3);
+
         mockMvc.perform(get("/api/users/emailsN"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$",hasSize(0)));
+                .andExpect(jsonPath("$[0].name",is("Mark")));
 
         verify(employeeSearchService).getEmployeeByEmailIsNull();
+    }
+    @Test
+    @DisplayName("GET /users/countryS")
+    @WithMockUser(roles = "USER")
+    void getEmployeeByLowerCaseCountryTest() throws Exception {
+
+        List<Employee> list = Collections.emptyList();
+        List<EmployeeReadDto> readDtos = asList(employeeReadDto);
+        doReturn(readDtos).when(employeeConverter).toListEmployeeReadDto(eq(list));
+        when(employeeSearchService.getByLowerCaseCountry()).thenReturn(list);
+
+        mockMvc.perform(get("/api/users/countryS"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$",hasSize(1)));
+
+        verify(employeeSearchService).getByLowerCaseCountry();
     }
 
     private void extractedToReadDto() {
