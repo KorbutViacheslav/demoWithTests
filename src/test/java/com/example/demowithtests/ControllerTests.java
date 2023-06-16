@@ -8,6 +8,7 @@ import com.example.demowithtests.service.EmployeeSearchService;
 import com.example.demowithtests.service.EmployeeService;
 import com.example.demowithtests.util.config.mapstruct.EmployeeMapper;
 import com.example.demowithtests.web.EmployeeController;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,15 +24,18 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,6 +43,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Viacheslav Korbut
@@ -95,6 +100,7 @@ public class ControllerTests {
     @DisplayName("POST /api/users")
     @WithMockUser(roles = "ADMIN")
     public void createPassTest() throws Exception {
+
         extractedToEmployeeDto();
         extractedToEmployee();
         when(service.create(any(Employee.class))).thenReturn(employee);
@@ -113,6 +119,7 @@ public class ControllerTests {
     @DisplayName("Entity POST /api/users")
     @WithMockUser(roles = "ADMIN")
     public void testEntitySave() throws Exception {
+
         extractedToEmployee();
         extractedToReadDto();
         when(this.service.create(any(Employee.class))).thenReturn(employee);
@@ -203,6 +210,34 @@ public class ControllerTests {
         assertTrue(contentType.contains(MediaType.APPLICATION_JSON_VALUE));
         String responseContent = result.getResponse().getContentAsString();
         assertNotNull(responseContent);
+    }
+    @Test
+    @DisplayName("GET /users/emailsN")
+    @WithMockUser(roles = "USER")
+    void getEmployeeByEmailIsNullTest() throws Exception {
+        var employee1 = Employee.builder()
+                .id(1).name("Mark").country("USA").gender(Gender.M).deleted(Boolean.FALSE)
+                .build();
+        var employee2 = Employee.builder()
+                .id(2).name("Jane").country("hungary").email("simple@gmail.com").gender(Gender.M).deleted(Boolean.FALSE)
+                .build();
+        var employee3 = Employee.builder()
+                .id(3).name("Bob").country("roman").gender(Gender.M).deleted(Boolean.FALSE)
+                .build();
+        var list = Arrays.asList(employee1, employee2, employee3);
+        List<EmployeeReadDto> readDtos= Collections.emptyList();
+        when(employeeConverter.toReadDto(any(Employee.class))).thenReturn(employeeReadDto);
+        when(employeeConverter.toListEmployeeReadDto(eq(list))).thenReturn(readDtos);
+        readDtos = employeeConverter.toListEmployeeReadDto(list);
+        when(employeeSearchService.getEmployeeByEmailIsNull()).thenReturn(list);
+        //assertThat(employeeSearchService.getEmployeeByEmailIsNull().get(0).getName()).isEqualTo("Mark");
+        //assertThat(employeeSearchService.getEmployeeByEmailIsNull().size()).isEqualTo(3);
+        mockMvc.perform(get("/api/users/emailsN"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$",hasSize(0)));
+
+        verify(employeeSearchService).getEmployeeByEmailIsNull();
     }
 
     private void extractedToReadDto() {
