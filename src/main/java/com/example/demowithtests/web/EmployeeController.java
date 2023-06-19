@@ -36,7 +36,6 @@ public class EmployeeController {
     private final EmployeeService employeeService;
     private final EmployeeSearchService employeeSearchService;
     private final EmployeeMapper employeeMapper;
-    //private final EmployeeCRUDService employeeCRUDService;
 
     //Save users to database(dto)
     @PostMapping("/users")
@@ -156,13 +155,6 @@ public class EmployeeController {
         return employeeMapper.toListEmployeeReadDto(employeeSearchService.filterByCountry(country));
     }
 
-/*    @DeleteMapping("/usersD")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> deleteAllAdmin() {
-        employeeCRUDService.removeAllAdmin();
-        return ResponseEntity.ok("DELETED ALL USERS!\n" + "ERROR!!!");
-    }*/
-
     /**
      * @implNote
      * home task №6. Get employee by email is null
@@ -184,9 +176,22 @@ public class EmployeeController {
     public List<EmployeeReadDto> getEmployeeByLowerCaseCountry() {
         return employeeMapper.toListEmployeeReadDto(employeeSearchService.getByLowerCaseCountry());
     }
+    /**
+     * @implNote
+     * home task №9. Get all Ukrainian from database.
+     */
     @GetMapping("/users/ua")
     @ResponseStatus(HttpStatus.OK)
     public List<EmployeeReadDto> getAllUkrainian(){
         return employeeMapper.toListEmployeeReadDto(employeeSearchService.getAllUkrainian());
+    }
+    /**
+     * @implNote
+     * home task №9. Get all home losses.
+     */
+    @GetMapping("/users/addresses")
+    @ResponseStatus(HttpStatus.OK)
+    public List<EmployeeReadDto> getEmployeeNullAddresses(){
+        return employeeMapper.toListEmployeeReadDto(employeeSearchService.getEmployeeNullAddresses());
     }
 }

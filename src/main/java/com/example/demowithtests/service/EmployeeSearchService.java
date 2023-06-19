@@ -53,4 +53,8 @@ public interface EmployeeSearchService {
      * home task №9. Get all Ukrainian from database.
      */
     List<Employee> getAllUkrainian();
+    /**
+     * home task №9. Get all home losses.
+     */
+    List<Employee> getEmployeeNullAddresses();
 }

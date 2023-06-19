@@ -48,7 +48,16 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
             nativeQuery = true)
     List<Employee> findEmployeesByLowerCaseCountry();
 
+    /**
+     * @implNote
+     * home task №9. Get all Ukrainian from database.
+     */
     @Query(value = "SELECT * FROM users WHERE deleted = false AND country = 'Ukraine'", nativeQuery = true)
     List<Employee> findAllUkrainian();
-
+    /**
+     * @implNote
+     * home task №9. Get all home losses.
+     */
+    @Query(value = "SELECT * FROM users u WHERE u.deleted = false AND  NOT EXISTS(SELECT * FROM addresses a WHERE a.employee_id=u.id)", nativeQuery = true)
+    List<Employee> findEmployeesNullAddresses();
 }

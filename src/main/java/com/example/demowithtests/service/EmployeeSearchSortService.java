@@ -112,12 +112,29 @@ public class EmployeeSearchSortService implements EmployeeSearchService {
         log.debug("getByLowerCaseCountry() EmployeeSearchSortService - end");
         return employees;
     }
+
     /**
      * @implNote home task №9. Get all Ukrainian from database.
      */
     @Override
     public List<Employee> getAllUkrainian() {
-        return employeeRepository.findAllUkrainian();
+        var employees=employeeRepository.findAllUkrainian();
+        if(employees.isEmpty()){
+            throw new EntityNotFoundException("Employees from Ukraine not found!");
+        }
+        return employees;
+    }
+
+    /**
+     * @implNote home task №9. Get all home losses.
+     */
+    @Override
+    public List<Employee> getEmployeeNullAddresses() {
+        var employees=employeeRepository.findEmployeesNullAddresses();
+        if(employees.isEmpty()){
+            throw new EntityNotFoundException("Employees home losses not found!");
+        }
+        return employees;
     }
 
     private List<Sort.Order> createSortOrder(List<String> sortList, String sortDirection) {
