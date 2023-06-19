@@ -50,14 +50,14 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
     /**
      * @implNote
-     * home task №9. Get all Ukrainian from database.
+     * home task №9. Get all Ukrainian from database(The query was made using JPQL).
      */
-    @Query(value = "SELECT * FROM users WHERE deleted = false AND country = 'Ukraine'", nativeQuery = true)
+    @Query(value = "SELECT e FROM Employee e WHERE e.deleted = false AND e.country = 'Ukraine'")
     List<Employee> findAllUkrainian();
     /**
      * @implNote
-     * home task №9. Get all home losses.
+     * home task №9. Get all home losses(The query was made using JPQL).
      */
-    @Query(value = "SELECT * FROM users u WHERE u.deleted = false AND  NOT EXISTS(SELECT * FROM addresses a WHERE a.employee_id=u.id)", nativeQuery = true)
+    @Query(value = "SELECT e FROM Employee e WHERE e.deleted = false AND NOT EXISTS (SELECT a FROM e.addresses a)")
     List<Employee> findEmployeesNullAddresses();
 }
