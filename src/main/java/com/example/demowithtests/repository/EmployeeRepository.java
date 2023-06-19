@@ -48,4 +48,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
             nativeQuery = true)
     List<Employee> findEmployeesByLowerCaseCountry();
 
+    @Query(value = "SELECT * FROM users WHERE deleted = false AND country = 'Ukraine'", nativeQuery = true)
+    List<Employee> findAllUkrainian();
+
 }

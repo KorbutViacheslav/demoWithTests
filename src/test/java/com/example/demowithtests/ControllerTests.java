@@ -209,6 +209,7 @@ public class ControllerTests {
         String responseContent = result.getResponse().getContentAsString();
         assertNotNull(responseContent);
     }
+
     @Test
     @DisplayName("GET /users/emailsN")
     @WithMockUser(roles = "USER")
@@ -223,24 +224,38 @@ public class ControllerTests {
         mockMvc.perform(get("/api/users/emailsN"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].name",is("Mark")));
+                .andExpect(jsonPath("$[0].name", is("Mark")));
 
         verify(employeeSearchService).getEmployeeByEmailIsNull();
     }
+
     @Test
     @DisplayName("GET /users/countryS")
     @WithMockUser(roles = "USER")
     void getEmployeeByLowerCaseCountryTest() throws Exception {
+/*        Employee e1 = Employee.builder()
+                .id(1).name("Mark").country("uK").gender(Gender.M).deleted(Boolean.FALSE)
+                .build();
+        Employee e2 = Employee.builder()
+                .id(1).name("Mike").country("USA").gender(Gender.M).deleted(Boolean.FALSE)
+                .build();
+        Employee e3 = Employee.builder()
+                .id(1).name("Milosh").country("poland").gender(Gender.M).deleted(Boolean.FALSE)
+                .build();
+        List<EmployeeReadDto> ler=Collections.emptyList();
+        var le=asList(e1,e2,e3);
+
+        ler=employeeConverter.toListEmployeeReadDto(le);*/
 
         List<Employee> list = Collections.emptyList();
         List<EmployeeReadDto> readDtos = asList(employeeReadDto);
-        doReturn(readDtos).when(employeeConverter).toListEmployeeReadDto(eq(list));
+        when(employeeConverter.toListEmployeeReadDto(eq(list))).thenReturn(readDtos);
         when(employeeSearchService.getByLowerCaseCountry()).thenReturn(list);
 
         mockMvc.perform(get("/api/users/countryS"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$",hasSize(1)));
+                .andExpect(jsonPath("$", hasSize(1)));
 
         verify(employeeSearchService).getByLowerCaseCountry();
     }

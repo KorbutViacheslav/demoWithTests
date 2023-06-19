@@ -184,4 +184,9 @@ public class EmployeeController {
     public List<EmployeeReadDto> getEmployeeByLowerCaseCountry() {
         return employeeMapper.toListEmployeeReadDto(employeeSearchService.getByLowerCaseCountry());
     }
+    @GetMapping("/users/ua")
+    @ResponseStatus(HttpStatus.OK)
+    public List<EmployeeReadDto> getAllUkrainian(){
+        return employeeMapper.toListEmployeeReadDto(employeeSearchService.getAllUkrainian());
+    }
 }

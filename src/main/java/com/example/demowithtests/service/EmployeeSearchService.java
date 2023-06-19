@@ -49,4 +49,8 @@ public interface EmployeeSearchService {
      * home task №6. Get employee by lower case country
      */
     List<Employee> getByLowerCaseCountry();
+    /**
+     * home task №9. Get all Ukrainian from database.
+     */
+    List<Employee> getAllUkrainian();
 }

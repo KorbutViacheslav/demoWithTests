@@ -112,6 +112,13 @@ public class EmployeeSearchSortService implements EmployeeSearchService {
         log.debug("getByLowerCaseCountry() EmployeeSearchSortService - end");
         return employees;
     }
+    /**
+     * @implNote home task №9. Get all Ukrainian from database.
+     */
+    @Override
+    public List<Employee> getAllUkrainian() {
+        return employeeRepository.findAllUkrainian();
+    }
 
     private List<Sort.Order> createSortOrder(List<String> sortList, String sortDirection) {
         List<Sort.Order> sorts = new ArrayList<>();
