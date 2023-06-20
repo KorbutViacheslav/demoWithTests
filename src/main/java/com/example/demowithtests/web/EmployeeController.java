@@ -2,8 +2,7 @@ package com.example.demowithtests.web;
 
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.dto.EmployeeDto;
-import com.example.demowithtests.dto.EmployeeReadDto;
-import com.example.demowithtests.service.EmployeeCRUDService;
+import com.example.demowithtests.dto.EmployeeRead;
 import com.example.demowithtests.service.EmployeeSearchService;
 import com.example.demowithtests.service.EmployeeService;
 import com.example.demowithtests.util.config.mapstruct.EmployeeMapper;
@@ -56,7 +55,7 @@ public class EmployeeController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<String> saveEmployee1(@RequestBody EmployeeDto employeeDto) {
         Employee e=employeeMapper.toEmployee(employeeDto);
-        EmployeeReadDto readDto = employeeMapper.toReadDto(employeeService.create(e));
+        EmployeeRead readDto = employeeMapper.toReadDto(employeeService.create(e));
         String massage = "The new employee is successfully created and added to database.\n" + readDto.toString();
         return ResponseEntity.ok(massage);
     }
@@ -64,13 +63,13 @@ public class EmployeeController {
     //Get list all users
     @GetMapping("/users")
     @ResponseStatus(HttpStatus.OK)
-    public List<EmployeeReadDto> getAllUsers() {
+    public List<EmployeeRead> getAllUsers() {
         return employeeMapper.toListEmployeeReadDto(employeeService.getAll());
     }
 
     @GetMapping("/users/p")
     @ResponseStatus(HttpStatus.OK)
-    public Page<EmployeeReadDto> getPage(@RequestParam(defaultValue = "0") int page,
+    public Page<EmployeeRead> getPage(@RequestParam(defaultValue = "0") int page,
                                          @RequestParam(defaultValue = "2") int size) {
         Pageable paging = PageRequest.of(page, size);
         return employeeService.getAllWithPagination(paging).map(employeeMapper::toReadDto);
@@ -85,12 +84,12 @@ public class EmployeeController {
             @ApiResponse(responseCode = "400", description = "Invalid input"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND. Specified employee request not found."),
             @ApiResponse(responseCode = "409", description = "Employee already exists")})
-    public EmployeeReadDto getEmployeeById(@PathVariable Integer id) {
+    public EmployeeRead getEmployeeById(@PathVariable Integer id) {
         log.debug("getEmployeeById() EmployeeController - start: id = {}", id);
         var employee = employeeService.getById(id);
         log.debug("getById() EmployeeController - to dto start: id = {}", id);
         var dto = employeeMapper.toReadDto(employee);
-        log.debug("getEmployeeById() EmployeeController - end: name = {}", dto.name);
+        log.debug("getEmployeeById() EmployeeController - end: name = {}", dto.name());
         return dto;
     }
 
@@ -99,7 +98,7 @@ public class EmployeeController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> refreshEmployee(@PathVariable("id") Integer id, @RequestBody @Valid EmployeeDto employeeDto) {
         Employee employee = employeeService.updateById(id, employeeMapper.toEmployee(employeeDto));
-        EmployeeReadDto readDto = employeeMapper.toReadDto(employee);
+        EmployeeRead readDto = employeeMapper.toReadDto(employee);
         String massage = "Employee was successful update!\n";
         return ResponseEntity.ok(massage + readDto.toString());
     }
@@ -122,7 +121,7 @@ public class EmployeeController {
 
     @GetMapping("/users/country")
     @ResponseStatus(HttpStatus.OK)
-    public Page<EmployeeReadDto> findByCountry(@RequestParam(required = false) String country,
+    public Page<EmployeeRead> findByCountry(@RequestParam(required = false) String country,
                                                @RequestParam(defaultValue = "0") int page,
                                                @RequestParam(defaultValue = "3") int size,
                                                @RequestParam(defaultValue = "") List<String> sortList,
@@ -151,7 +150,7 @@ public class EmployeeController {
 
     @GetMapping("/users/countryBy")
     @ResponseStatus(HttpStatus.OK)
-    public List<EmployeeReadDto> getByCountry(@RequestParam(required = true) String country) {
+    public List<EmployeeRead> getByCountry(@RequestParam(required = true) String country) {
         return employeeMapper.toListEmployeeReadDto(employeeSearchService.filterByCountry(country));
     }
 
@@ -162,7 +161,7 @@ public class EmployeeController {
      */
     @GetMapping("/users/emailsN")
     @ResponseStatus(HttpStatus.OK)
-    public List<EmployeeReadDto> getEmployeeByEmailIsNull() {
+    public List<EmployeeRead> getEmployeeByEmailIsNull() {
         return employeeMapper.toListEmployeeReadDto(employeeSearchService.getEmployeeByEmailIsNull());
     }
 
@@ -173,7 +172,7 @@ public class EmployeeController {
      */
     @GetMapping("/users/countryS")
     @ResponseStatus(HttpStatus.OK)
-    public List<EmployeeReadDto> getEmployeeByLowerCaseCountry() {
+    public List<EmployeeRead> getEmployeeByLowerCaseCountry() {
         return employeeMapper.toListEmployeeReadDto(employeeSearchService.getByLowerCaseCountry());
     }
     /**
@@ -182,7 +181,7 @@ public class EmployeeController {
      */
     @GetMapping("/users/ua")
     @ResponseStatus(HttpStatus.OK)
-    public List<EmployeeReadDto> getAllUkrainian(){
+    public List<EmployeeRead> getAllUkrainian(){
         return employeeMapper.toListEmployeeReadDto(employeeSearchService.getAllUkrainian());
     }
     /**
@@ -191,7 +190,7 @@ public class EmployeeController {
      */
     @GetMapping("/users/addresses")
     @ResponseStatus(HttpStatus.OK)
-    public List<EmployeeReadDto> getEmployeeNullAddresses(){
+    public List<EmployeeRead> getEmployeeNullAddresses(){
         return employeeMapper.toListEmployeeReadDto(employeeSearchService.getEmployeeNullAddresses());
     }
 }

@@ -3,6 +3,7 @@ package com.example.demowithtests;
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.domain.Gender;
 import com.example.demowithtests.dto.EmployeeDto;
+import com.example.demowithtests.dto.EmployeeRead;
 import com.example.demowithtests.dto.EmployeeReadDto;
 import com.example.demowithtests.service.EmployeeSearchService;
 import com.example.demowithtests.service.EmployeeService;
@@ -73,7 +74,7 @@ public class ControllerTests {
     EmployeeMapper employeeConverter;
     private Employee employee;
     private EmployeeDto eDto;
-    private EmployeeReadDto employeeReadDto;
+    private EmployeeRead employeeRead;
 
     @BeforeEach
     void setUp() {
@@ -88,11 +89,8 @@ public class ControllerTests {
         eDto.country = "uK";
         eDto.gender = Gender.M;
 
-        employeeReadDto = new EmployeeReadDto();
-        employeeReadDto.name = "Mark";
-        //employeeReadDto.email = "test@mail.com";
-        employeeReadDto.country = "uK";
-        employeeReadDto.gender = Gender.M;
+        employeeRead = new EmployeeRead("Mark","uK",null,Gender.M,null);
+
     }
 
     @Test
@@ -216,7 +214,7 @@ public class ControllerTests {
     void getEmployeeByEmailIsNullTest() throws Exception {
 
         List<Employee> list = Collections.emptyList();
-        List<EmployeeReadDto> readDtos = asList(employeeReadDto);
+        List<EmployeeRead> readDtos = asList(employeeRead);
 
         doReturn(readDtos).when(employeeConverter).toListEmployeeReadDto(eq(list));
         when(employeeSearchService.getEmployeeByEmailIsNull()).thenReturn(list);
@@ -248,7 +246,7 @@ public class ControllerTests {
         ler=employeeConverter.toListEmployeeReadDto(le);*/
 
         List<Employee> list = Collections.emptyList();
-        List<EmployeeReadDto> readDtos = asList(employeeReadDto);
+        List<EmployeeRead> readDtos = asList(employeeRead);
         when(employeeConverter.toListEmployeeReadDto(eq(list))).thenReturn(readDtos);
         when(employeeSearchService.getByLowerCaseCountry()).thenReturn(list);
 
@@ -261,7 +259,7 @@ public class ControllerTests {
     }
 
     private void extractedToReadDto() {
-        when(employeeConverter.toReadDto(any(Employee.class))).thenReturn(employeeReadDto);
+        when(employeeConverter.toReadDto(any(Employee.class))).thenReturn(employeeRead);
     }
 
     private void extractedToEmployee() {

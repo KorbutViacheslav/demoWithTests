@@ -2,7 +2,7 @@ package com.example.demowithtests.util.config.mapstruct;
 
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.dto.EmployeeDto;
-import com.example.demowithtests.dto.EmployeeReadDto;
+import com.example.demowithtests.dto.EmployeeRead;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -19,9 +19,9 @@ public interface EmployeeMapper {
 
     EmployeeDto toEmployeeDto(Employee entity);
 
-    EmployeeReadDto toReadDto(Employee employee);
+    EmployeeRead toReadDto(Employee employee);
 
-    List<EmployeeReadDto> toListEmployeeReadDto(List<Employee> employees);
+    List<EmployeeRead> toListEmployeeReadDto(List<Employee> employees);
 }
 
 
