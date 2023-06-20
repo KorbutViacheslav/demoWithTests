@@ -22,5 +22,5 @@ public record EmployeeReadRec(@NotNull(message = "Name may not be null")
                               @Schema(description = "Employee gender.", example = "M")
                               Gender gender,
                               @Schema(description = "Employee address.")
-                              Set<AddressDto> addresses) {
+                              Set<AddressRec> addresses) {
 }
