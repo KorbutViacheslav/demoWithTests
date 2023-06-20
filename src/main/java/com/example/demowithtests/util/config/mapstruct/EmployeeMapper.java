@@ -1,8 +1,8 @@
 package com.example.demowithtests.util.config.mapstruct;
 
 import com.example.demowithtests.domain.Employee;
-import com.example.demowithtests.dto.EmployeeDto;
-import com.example.demowithtests.dto.EmployeeRead;
+import com.example.demowithtests.dto.EmployeeReadRec;
+import com.example.demowithtests.dto.EmployeeRec;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -15,13 +15,13 @@ public interface EmployeeMapper {
     EmployeeMapper INSTANCE = Mappers.getMapper(EmployeeMapper.class);
 
     @Mapping(target = "id", ignore = true)
-    Employee toEmployee(EmployeeDto dto);
+    Employee toEmployee(EmployeeRec dto);
 
-    EmployeeDto toEmployeeDto(Employee entity);
+    EmployeeRec toEmployeeDto(Employee entity);
 
-    EmployeeRead toReadDto(Employee employee);
+    EmployeeReadRec toReadDto(Employee employee);
 
-    List<EmployeeRead> toListEmployeeReadDto(List<Employee> employees);
+    List<EmployeeReadRec> toListEmployeeReadDto(List<Employee> employees);
 }
 
 

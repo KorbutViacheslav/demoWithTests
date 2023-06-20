@@ -2,9 +2,8 @@ package com.example.demowithtests;
 
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.domain.Gender;
-import com.example.demowithtests.dto.EmployeeDto;
-import com.example.demowithtests.dto.EmployeeRead;
-import com.example.demowithtests.dto.EmployeeReadDto;
+import com.example.demowithtests.dto.EmployeeReadRec;
+import com.example.demowithtests.dto.EmployeeRec;
 import com.example.demowithtests.service.EmployeeSearchService;
 import com.example.demowithtests.service.EmployeeService;
 import com.example.demowithtests.util.config.mapstruct.EmployeeMapper;
@@ -73,8 +72,8 @@ public class ControllerTests {
     @MockBean
     EmployeeMapper employeeConverter;
     private Employee employee;
-    private EmployeeDto eDto;
-    private EmployeeRead employeeRead;
+    private EmployeeRec employeeRec;
+    private EmployeeReadRec employeeRead;
 
     @BeforeEach
     void setUp() {
@@ -82,14 +81,10 @@ public class ControllerTests {
                 .id(1).name("Mark").country("uK").email(null).gender(Gender.M).deleted(Boolean.FALSE)
                 .build();
 
-        eDto = new EmployeeDto();
-        eDto.id = 1;
-        eDto.name = "Mark";
-        //eDto.email = "test@mail.com";
-        eDto.country = "uK";
-        eDto.gender = Gender.M;
+        employeeRec = new EmployeeRec(1,"Mark","uK",null,Gender.M, null,null);
 
-        employeeRead = new EmployeeRead("Mark","uK",null,Gender.M,null);
+
+        employeeRead = new EmployeeReadRec("Mark","uK",null,Gender.M,null);
 
     }
 
@@ -214,7 +209,7 @@ public class ControllerTests {
     void getEmployeeByEmailIsNullTest() throws Exception {
 
         List<Employee> list = Collections.emptyList();
-        List<EmployeeRead> readDtos = asList(employeeRead);
+        List<EmployeeReadRec> readDtos = asList(employeeRead);
 
         doReturn(readDtos).when(employeeConverter).toListEmployeeReadDto(eq(list));
         when(employeeSearchService.getEmployeeByEmailIsNull()).thenReturn(list);
@@ -246,7 +241,7 @@ public class ControllerTests {
         ler=employeeConverter.toListEmployeeReadDto(le);*/
 
         List<Employee> list = Collections.emptyList();
-        List<EmployeeRead> readDtos = asList(employeeRead);
+        List<EmployeeReadRec> readDtos = asList(employeeRead);
         when(employeeConverter.toListEmployeeReadDto(eq(list))).thenReturn(readDtos);
         when(employeeSearchService.getByLowerCaseCountry()).thenReturn(list);
 
@@ -263,11 +258,11 @@ public class ControllerTests {
     }
 
     private void extractedToEmployee() {
-        when(employeeConverter.toEmployee(any(EmployeeDto.class))).thenReturn(employee);
+        when(employeeConverter.toEmployee(any(EmployeeRec.class))).thenReturn(employee);
     }
 
     private void extractedToEmployeeDto() {
-        when(employeeConverter.toEmployeeDto(any(Employee.class))).thenReturn(eDto);
+        when(employeeConverter.toEmployeeDto(any(Employee.class))).thenReturn(employeeRec);
     }
 
 }
