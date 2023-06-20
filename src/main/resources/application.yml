@@ -25,6 +25,19 @@ spring:
     enabled: false
     #    clean-disabled: true
     baseline-on-migrate: true
+  #Email sender
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: korbutjava@gmail.com
+    password: ${GOOGLE_LOCAL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 #  security:
 #    user:
 #      name: admin
@@ -51,5 +64,6 @@ management:
   endpoint:
     health:
       enabled: true
+
 
 

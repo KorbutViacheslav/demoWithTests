@@ -5,6 +5,7 @@ import com.example.demowithtests.dto.EmployeeReadRec;
 import com.example.demowithtests.dto.EmployeeRec;
 import com.example.demowithtests.service.EmployeeSearchService;
 import com.example.demowithtests.service.EmployeeService;
+import com.example.demowithtests.service.sender.EmailService;
 import com.example.demowithtests.util.config.mapstruct.EmployeeMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -54,7 +55,7 @@ public class EmployeeController {
     @PostMapping("/usersS")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<String> saveEmployee1(@RequestBody EmployeeRec request) {
-        Employee e=employeeMapper.toEmployee(request);
+        Employee e = employeeMapper.toEmployee(request);
         EmployeeReadRec readDto = employeeMapper.toReadDto(employeeService.create(e));
         String massage = "The new employee is successfully created and added to database.\n" + readDto.toString();
         return ResponseEntity.ok(massage);
@@ -155,8 +156,7 @@ public class EmployeeController {
     }
 
     /**
-     * @implNote
-     * home task №6. Get employee by email is null
+     * @implNote home task №6. Get employee by email is null
      * home task №7. Remake the return method of the EmployeeReadDto list
      */
     @GetMapping("/users/emailsN")
@@ -166,8 +166,7 @@ public class EmployeeController {
     }
 
     /**
-     * @implNote
-     * home task №6. Get employee by lower case country
+     * @implNote home task №6. Get employee by lower case country
      * home task №7. Remake the return method of the EmployeeReadDto list
      */
     @GetMapping("/users/countryS")
@@ -175,22 +174,22 @@ public class EmployeeController {
     public List<EmployeeReadRec> getEmployeeByLowerCaseCountry() {
         return employeeMapper.toListEmployeeReadDto(employeeSearchService.getByLowerCaseCountry());
     }
+
     /**
-     * @implNote
-     * home task №9. Get all Ukrainian from database.
+     * @implNote home task №9. Get all Ukrainian from database.
      */
     @GetMapping("/users/ua")
     @ResponseStatus(HttpStatus.OK)
-    public List<EmployeeReadRec> getAllUkrainian(){
+    public List<EmployeeReadRec> getAllUkrainian() {
         return employeeMapper.toListEmployeeReadDto(employeeSearchService.getAllUkrainian());
     }
+
     /**
-     * @implNote
-     * home task №9. Get all home losses.
+     * @implNote home task №9. Get all home losses.
      */
     @GetMapping("/users/addresses")
     @ResponseStatus(HttpStatus.OK)
-    public List<EmployeeReadRec> getEmployeeNullAddresses(){
+    public List<EmployeeReadRec> getEmployeeNullAddresses() {
         return employeeMapper.toListEmployeeReadDto(employeeSearchService.getEmployeeNullAddresses());
     }
 }
