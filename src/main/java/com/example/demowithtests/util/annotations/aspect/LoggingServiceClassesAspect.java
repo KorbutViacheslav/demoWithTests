@@ -10,6 +10,15 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 import java.util.Optional;
 
+/**
+ * @author Viacheslav Korbut
+ * @implNote
+ * home task №11. Implement around aspect.
+ * Deleted before and after aspect and added to around.
+ * Added throw log in around aspect.
+ * Add static color.
+ */
+
 @Log4j2
 @Aspect
 @Component

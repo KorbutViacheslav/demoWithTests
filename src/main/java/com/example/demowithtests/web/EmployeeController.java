@@ -5,7 +5,6 @@ import com.example.demowithtests.dto.EmployeeReadRec;
 import com.example.demowithtests.dto.EmployeeRec;
 import com.example.demowithtests.service.EmployeeSearchService;
 import com.example.demowithtests.service.EmployeeService;
-import com.example.demowithtests.service.sender.EmailService;
 import com.example.demowithtests.util.config.mapstruct.EmployeeMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -86,11 +85,8 @@ public class EmployeeController {
             @ApiResponse(responseCode = "404", description = "NOT FOUND. Specified employee request not found."),
             @ApiResponse(responseCode = "409", description = "Employee already exists")})
     public EmployeeReadRec getEmployeeById(@PathVariable Integer id) {
-        log.debug("getEmployeeById() EmployeeController - start: id = {}", id);
         var employee = employeeService.getById(id);
-        log.debug("getById() EmployeeController - to dto start: id = {}", id);
         var dto = employeeMapper.toReadDto(employee);
-        log.debug("getEmployeeById() EmployeeController - end: name = {}", dto.name());
         return dto;
     }
 
