@@ -49,6 +49,7 @@ logging:
   level:
     org.springframework: error
     org.hibernate: error
+    com.example.demowithtests: debug
 # Server configuration
 server:
   port: 8080 #set your port
