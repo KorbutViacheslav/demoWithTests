@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = CountryRightFormedValidator.class)
 public @interface CountryRightFormed {
-    String message() default "Country must be a 2 characters length and uppercase. E.g. UK, CZ, UA";
+    String message() default "Country must be and have 2 characters length and uppercase. E.g. UK, CZ, UA";
 
     Class<?>[] groups() default {};
 

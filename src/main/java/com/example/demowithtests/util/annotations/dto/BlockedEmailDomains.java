@@ -23,7 +23,9 @@ import java.lang.annotation.Target;
 public @interface BlockedEmailDomains {
     String message() default "This email domain is banned";
 
-    String[] contains() default {".ru", ".su"};
+    String[] contains() default {".ru", ".su", ".by",".рф"};
+
+    String[] blockedWords() default  {"@mail", "@yandex", "@rambler", "@list", "@inbox"};
 
     Class<?>[] groups() default {};
 

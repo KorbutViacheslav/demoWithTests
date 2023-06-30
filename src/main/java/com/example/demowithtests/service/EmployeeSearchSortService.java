@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 @Service
 public class EmployeeSearchSortService implements EmployeeSearchService {
     private final EmployeeRepository employeeRepository;
-    private final EmployeeCRUDService employeeCRUDService;
 
         /*@Override
     public Page<Employee> findByCountryContaining(String country, Pageable pageable) {
@@ -33,14 +32,10 @@ public class EmployeeSearchSortService implements EmployeeSearchService {
 
     @Override
     public List<String> getAllEmployeeCountry() {
-        log.info("getAllEmployeeCountry() - start:");
-
         List<Employee> employeeList = employeeRepository.findAll();
         List<String> countries = employeeList.stream()
                 .map(Employee::getCountry)
                 .collect(Collectors.toList());
-
-        log.info("getAllEmployeeCountry() - end: countries = {}", countries);
         return countries;
     }
 
@@ -67,8 +62,7 @@ public class EmployeeSearchSortService implements EmployeeSearchService {
         var employeeList = employeeRepository.findAll();
 
         var emails = employeeList.stream()
-                .map(Employee::getEmail)
-                .collect(Collectors.toList());
+                .map(Employee::getEmail).toList();
 
         var opt = emails.stream()
                 .filter(s -> s.endsWith(".com"))
@@ -88,12 +82,10 @@ public class EmployeeSearchSortService implements EmployeeSearchService {
      */
     @Override
     public List<Employee> getEmployeeByEmailIsNull() {
-        log.debug("getEmployeeByEmailIsNull() EmployeeSearchSortService - start");
         List<Employee> employees = employeeRepository.findByEmailIsNull();
         if (employees.isEmpty()) {
             throw new EntityNotFoundException("Employees not found!");
         }
-        log.debug("getEmployeeByEmailIsNull() EmployeeSearchSortService - end");
         return employees;
     }
 
@@ -102,14 +94,12 @@ public class EmployeeSearchSortService implements EmployeeSearchService {
      */
     @Override
     public List<Employee> getByLowerCaseCountry() {
-        log.debug("getByLowerCaseCountry() EmployeeSearchSortService - start");
         List<Employee> employees = employeeRepository.findEmployeesByLowerCaseCountry()
                 .stream().peek(e -> e.setCountry(StringUtils.capitalize(e.getCountry())))
                 .collect(Collectors.toList());
         if (employees.isEmpty()) {
             throw new EntityNotFoundException("Employees not found!");
         }
-        log.debug("getByLowerCaseCountry() EmployeeSearchSortService - end");
         return employees;
     }
 

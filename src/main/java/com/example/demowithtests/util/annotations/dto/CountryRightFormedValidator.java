@@ -2,6 +2,8 @@ package com.example.demowithtests.util.annotations.dto;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.Arrays;
+import java.util.Locale;
 
 public class CountryRightFormedValidator implements ConstraintValidator<CountryRightFormed, String> {
 
@@ -9,6 +11,7 @@ public class CountryRightFormedValidator implements ConstraintValidator<CountryR
     public boolean isValid(String country, ConstraintValidatorContext constraintValidatorContext) {
         if (country == null)
             return true;
-        return country.length() == 2 && country.equals(country.toUpperCase());
+
+        return Arrays.asList(Locale.getISOCountries()).contains(country);
     }
 }
