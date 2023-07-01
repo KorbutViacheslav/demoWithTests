@@ -1,6 +1,8 @@
 package com.example.demowithtests.util.annotations.entity;
 
 import com.example.demowithtests.domain.Employee;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -24,7 +26,7 @@ public class CustomEntityValidationAspect {
     public void makeValid(JoinPoint joinPoint) throws Throwable {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         ActivateCustomAnnotations annotation = signature.getMethod().getAnnotation(ActivateCustomAnnotations.class);
-        List annotations = Arrays.asList(annotation.value());
+        List<Class<?>> annotations = Arrays.asList(annotation.value());
         for (Object arg : joinPoint.getArgs()) {
             if (arg instanceof Employee) {
                 for (Field field : arg.getClass().getDeclaredFields()) {
@@ -48,7 +50,7 @@ public class CustomEntityValidationAspect {
     }
 
     private String toNameFormat(String name) {
-        return name.trim().substring(0, 1).toUpperCase() + name.trim().substring(1).toLowerCase();
+        return StringUtils.capitalize(name.trim().toLowerCase());
     }
 
     private void setLowerCase(Object arg, Field field) throws IllegalAccessException {

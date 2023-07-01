@@ -5,6 +5,12 @@ import org.springframework.util.StringUtils;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+/**
+ * @author Viacheslav Korbut
+ * @implNote
+ * home task №11. Implement validator.
+ * Fields name,country and gender not be null.
+ */
 
 public class NotNullFieldValidator implements ConstraintValidator<NotNullField, EmployeeRec> {
     @Override

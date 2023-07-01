@@ -8,12 +8,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.Instant;
 import java.util.Set;
 
 @NotNullField
 public record EmployeeRec(Integer id,
+                          @Pattern(regexp = "^[a-z]+$", message = "Invalid username format")
                           @Size(min = 2, max = 32, message = "Name must be between 2 and 32 characters long")
                           @Schema(description = "Name of an employee.", example = "Billy")
                           String name,
