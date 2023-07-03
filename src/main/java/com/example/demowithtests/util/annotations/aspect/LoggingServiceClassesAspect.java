@@ -32,8 +32,10 @@ public class LoggingServiceClassesAspect {
 
     @Around("callAtMyServicesPublicMethods() && args(returningValue)")
     public Object addLoggingAround(ProceedingJoinPoint joinPoint, Object returningValue) throws Throwable {
+
         String methodName = joinPoint.getSignature().toShortString();
         log.debug(BLUE_COLOR + "Service: {} - start." + RESET_COLOR, methodName);
+
         try {
             Object result = joinPoint.proceed();
             Object outputValue = Optional.ofNullable(result)
