@@ -1,11 +1,15 @@
 package com.example.demowithtests.domain;
 
+import com.example.demowithtests.util.annotations.entity.Name;
+import com.example.demowithtests.util.annotations.entity.ToLowerCase;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -19,9 +23,21 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Name
     private String name;
-    private String email;
+
     private String country;
+
+    @ToLowerCase
+    private String email;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
     private boolean deleted;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "employee_id")
+    private Set<Address> addresses = new HashSet<>();
 
 }

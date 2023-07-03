@@ -1,11 +1,16 @@
 # Spring Boot configuration
 spring:
+  #application:
+   # name: service
+  #main:
+   # allow-bean-definition-overriding: true
+   # lazy-initialization: true
   # Database
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/employee?currentSchema=users
     username: postgres
-    password: ${MY_APP_DB_PASSWORD}
+    password: ${DB_PASSWORD}
   # JPA properties
   jpa:
     hibernate:
@@ -13,10 +18,53 @@ spring:
     show-sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    open-in-view: false
-    generate-ddl: true
+    #open-in-view: false
+    #generate-ddl: true
+  flyway:
+    #    locations: filesystem:.\src\main\resources\db\migration
+    enabled: false
+    #    clean-disabled: true
+    baseline-on-migrate: true
+  #Email sender
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: korbutjava@gmail.com
+    password: ${GOOGLE_LOCAL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+#  security:
+#    user:
+#      name: admin
+#      password: admin
+# Logger configuration
+logging:
+  pattern:
+    console: "%d %-5level %logger : %msg%n"
+  level:
+    org.springframework: error
+    org.hibernate: error
+    com.example.demowithtests: debug
 # Server configuration
 server:
   port: 8080 #set your port
+# Swagger configuration
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html # swagger-ui custom path
+  api-docs:
+    path: /v3/api-docs.yaml
+management:
+  endpoints:
+    enabled-by-default: false
+  endpoint:
+    health:
+      enabled: true
+
 
 

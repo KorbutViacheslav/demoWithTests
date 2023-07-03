@@ -1,14 +1,21 @@
 package com.example.demowithtests.service;
 
 import com.example.demowithtests.domain.Employee;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface Service {
+public interface EmployeeService {
 
     Employee create(Employee employee);
 
+    Employee createEM(Employee employee);
+
     List<Employee> getAll();
+
+    Page<Employee> getAllWithPagination(Pageable pageable);
 
     Employee getById(Integer id);
 
@@ -16,10 +23,10 @@ public interface Service {
 
     void removeById(Integer id);
 
-    void removeByIdAdmin(Integer id);
-
     void removeAll();
 
-    void recoverAllAdmin();
+
+
+
 
 }
