@@ -6,6 +6,7 @@ import com.example.demowithtests.dto.EmployeeRec;
 import com.example.demowithtests.service.EmployeeSearchService;
 import com.example.demowithtests.service.EmployeeService;
 import com.example.demowithtests.util.config.mapstruct.EmployeeMapper;
+import com.example.demowithtests.util.config.swagger.EmployeeControllerApi;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -28,9 +29,7 @@ import java.util.Optional;
 @RestController
 @AllArgsConstructor
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
-@Slf4j
-@Tag(name = "Employee", description = "Employee API")
-public class EmployeeController {
+public class EmployeeController implements EmployeeControllerApi {
 
     private final EmployeeService employeeService;
     private final EmployeeSearchService employeeSearchService;
@@ -39,18 +38,11 @@ public class EmployeeController {
     //Save users to database(dto)
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
-    @Operation(summary = "This is endpoint to add a new employee.", description = "Create request to add a new employee.", tags = {"Employee"})
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "CREATED. The new employee is successfully created and added to database."),
-            @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "404", description = "NOT FOUND. Specified employee request not found."),
-            @ApiResponse(responseCode = "409", description = "Employee already exists")})
     public EmployeeRec saveEmployee(@RequestBody @Valid EmployeeRec requestForSave) {
         var employee = employeeMapper.toEmployee(requestForSave);
         return employeeMapper.toEmployeeDto(employeeService.create(employee));
     }
 
-    //Save users to database
     @PostMapping("/usersS")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<String> saveEmployee1(@RequestBody EmployeeRec request) {
@@ -60,7 +52,7 @@ public class EmployeeController {
         return ResponseEntity.ok(massage);
     }
 
-    //Get list all users
+
     @GetMapping("/users")
     @ResponseStatus(HttpStatus.OK)
     public List<EmployeeReadRec> getAllUsers() {
@@ -78,12 +70,6 @@ public class EmployeeController {
     //Get user by id
     @GetMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "This is endpoint returned a employee by his id.", description = "Create request to read a employee by id", tags = {"Employee"})
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Successful. pam pam param."),
-            @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "404", description = "NOT FOUND. Specified employee request not found."),
-            @ApiResponse(responseCode = "409", description = "Employee already exists")})
     public EmployeeReadRec getEmployeeById(@PathVariable Integer id) {
         var employee = employeeService.getById(id);
         var dto = employeeMapper.toReadDto(employee);
