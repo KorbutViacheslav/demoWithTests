@@ -1,7 +1,7 @@
 package com.example.demowithtests.util.config.swagger;
 
-import com.example.demowithtests.dto.EmployeeReadRec;
-import com.example.demowithtests.dto.EmployeeRec;
+import com.example.demowithtests.dto.employee.EmployeeReadRec;
+import com.example.demowithtests.dto.employee.EmployeeRec;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

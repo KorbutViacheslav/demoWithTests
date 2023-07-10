@@ -1,8 +1,8 @@
 package com.example.demowithtests.util.config.mapstruct;
 
 import com.example.demowithtests.domain.Employee;
-import com.example.demowithtests.dto.EmployeeReadRec;
-import com.example.demowithtests.dto.EmployeeRec;
+import com.example.demowithtests.dto.employee.EmployeeReadRec;
+import com.example.demowithtests.dto.employee.EmployeeRec;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

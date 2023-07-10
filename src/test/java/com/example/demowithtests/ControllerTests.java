@@ -2,8 +2,8 @@ package com.example.demowithtests;
 
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.domain.Gender;
-import com.example.demowithtests.dto.EmployeeReadRec;
-import com.example.demowithtests.dto.EmployeeRec;
+import com.example.demowithtests.dto.employee.EmployeeReadRec;
+import com.example.demowithtests.dto.employee.EmployeeRec;
 import com.example.demowithtests.service.EmployeeSearchService;
 import com.example.demowithtests.service.EmployeeService;
 import com.example.demowithtests.util.config.mapstruct.EmployeeMapper;
@@ -78,14 +78,13 @@ public class ControllerTests {
     @BeforeEach
     void setUp() {
         employee = Employee.builder()
-                .id(1).name("Mark").country("uK").email(null).gender(Gender.M).deleted(Boolean.FALSE)
+                .id(1).name("mark").country("UA").email(null).gender(Gender.M).deleted(Boolean.FALSE)
                 .build();
 
-        employeeRec = new EmployeeRec(1,"Mark","uK",null,Gender.M, null,null);
+        employeeRec = new EmployeeRec(1,"mark","UA",null,Gender.M, null,null,null);
 
 
-        employeeRead = new EmployeeReadRec("Mark","uK",null,Gender.M,null);
-
+        employeeRead = new EmployeeReadRec("mark","UA",null,Gender.M,null,null);
     }
 
     @Test
@@ -136,7 +135,7 @@ public class ControllerTests {
 
         mockMvc.perform(get("/api/users/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", is("Mark")));
+                .andExpect(jsonPath("$.name", is("mark")));
 
         verify(service).getById(anyInt());
     }
@@ -155,7 +154,7 @@ public class ControllerTests {
                         .content(mapper.writeValueAsString(employee)))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Employee was successful update!")))
-                .andExpect(content().string(containsString("Mark")));
+                .andExpect(content().string(containsString("mark")));
 
         verify(service).updateById(eq(1), any(Employee.class));
     }
@@ -217,7 +216,7 @@ public class ControllerTests {
         mockMvc.perform(get("/api/users/emailsN"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$[0].name", is("Mark")));
+                .andExpect(jsonPath("$[0].name", is("mark")));
 
         verify(employeeSearchService).getEmployeeByEmailIsNull();
     }

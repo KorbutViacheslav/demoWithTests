@@ -1,4 +1,4 @@
-package com.example.demowithtests.dto;
+package com.example.demowithtests.dto.addres;
 
 import java.time.Instant;
 import java.util.Date;

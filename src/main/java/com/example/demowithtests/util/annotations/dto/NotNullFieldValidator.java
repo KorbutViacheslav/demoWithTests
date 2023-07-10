@@ -1,6 +1,6 @@
 package com.example.demowithtests.util.annotations.dto;
 
-import com.example.demowithtests.dto.EmployeeRec;
+import com.example.demowithtests.dto.employee.EmployeeRec;
 import org.springframework.util.StringUtils;
 
 import javax.validation.ConstraintValidator;

@@ -40,4 +40,8 @@ public class Employee {
     @JoinColumn(name = "employee_id")
     private Set<Address> addresses = new HashSet<>();
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "passport_id",referencedColumnName = "id")
+    private EmployeePassport employeePassport;
+
 }

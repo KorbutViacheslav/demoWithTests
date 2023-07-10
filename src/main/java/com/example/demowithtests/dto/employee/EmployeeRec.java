@@ -1,13 +1,15 @@
-package com.example.demowithtests.dto;
+package com.example.demowithtests.dto.employee;
 
 import com.example.demowithtests.domain.Gender;
+import com.example.demowithtests.dto.addres.AddressRec;
+import com.example.demowithtests.dto.passport.PassportReadRec;
+import com.example.demowithtests.dto.passport.PassportRec;
 import com.example.demowithtests.util.annotations.dto.BlockedEmailDomains;
 import com.example.demowithtests.util.annotations.dto.CountryRightFormed;
 import com.example.demowithtests.util.annotations.dto.NotNullField;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.time.Instant;
@@ -29,7 +31,8 @@ public record EmployeeRec(Integer id,
                           @Schema(description = "Employee gender.", example = "M")
                           Gender gender,
                           Instant startDate,
-                          Set<AddressRec> addresses) {
+                          Set<AddressRec> addresses,
+                          PassportRec passportRec) {
     public EmployeeRec {
         startDate = Instant.now();
     }
