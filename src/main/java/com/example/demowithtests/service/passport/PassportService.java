@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -29,14 +30,17 @@ public class PassportService implements EmployeePassportService {
 
     @Override
     public EmployeePassport update(Long id) {
-        LocalDateTime localDateTime = LocalDateTime.now().plusYears(10);
-        return passportRepository.findById(id).map(
+        EmployeePassport eP = passportRepository.findById(id).map(
                 entity-> {
                     entity.setHandDate(new Date());
-                    entity.setExpireDate(localDateTime);
+                    entity.setExpireDate(LocalDateTime.now().plusYears(10));
                     entity.setIsHanded(Boolean.TRUE);
                     return passportRepository.save(entity);
                 }).orElseThrow(()->new NotFoundException("Passport is absent"));
+        if(eP.getIsHanded()){
+            throw new EntityNotFoundException("Passport is handed another employee");
+        }
+        return eP;
     }
 
     @Override
