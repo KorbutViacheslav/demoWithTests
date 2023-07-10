@@ -1,7 +1,10 @@
 package com.example.demowithtests.service;
 
 import com.example.demowithtests.domain.Employee;
+import com.example.demowithtests.domain.EmployeePassport;
+import com.example.demowithtests.repository.EmployeePassportRepository;
 import com.example.demowithtests.repository.EmployeeRepository;
+import com.example.demowithtests.service.passport.EmployeePassportService;
 import com.example.demowithtests.util.annotations.entity.ActivateCustomAnnotations;
 import com.example.demowithtests.util.annotations.entity.Name;
 import com.example.demowithtests.util.annotations.entity.ToLowerCase;
@@ -13,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
@@ -29,6 +33,8 @@ import java.util.stream.Collectors;
 public class EmployeeCRUDService implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final EmployeePassportRepository employeePassportRepository;
+    private final EmployeePassportService employeePassportService;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -110,6 +116,14 @@ public class EmployeeCRUDService implements EmployeeService {
             employee.setDeleted(true);
             employeeRepository.save(employee);
         });
+    }
+
+    @Override
+    public Employee handPassport(Integer employeeId, Long passportId) {
+        Employee employee = getById(employeeId);
+        EmployeePassport employeePassport = employeePassportService.update(passportId);
+        employee.setEmployeePassport(employeePassport);
+        return employeeRepository.save(employee);
     }
 
     public void removeAllAdmin() {

@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,12 +28,13 @@ public class PassportService implements EmployeePassportService {
     }
 
     @Override
-    public EmployeePassport update(Long id, EmployeePassport employeePassport) {
+    public EmployeePassport update(Long id) {
+        LocalDateTime localDateTime = LocalDateTime.now().plusYears(10);
         return passportRepository.findById(id).map(
                 entity-> {
-                    entity.setHandDate(employeePassport.getHandDate());
-                    entity.setExpireDate(employeePassport.getExpireDate());
-                    entity.setBodyHanded(employeePassport.getBodyHanded());
+                    entity.setHandDate(new Date());
+                    entity.setExpireDate(localDateTime);
+                    entity.setIsHanded(Boolean.TRUE);
                     return passportRepository.save(entity);
                 }).orElseThrow(()->new NotFoundException("Passport is absent"));
     }
@@ -48,12 +51,12 @@ public class PassportService implements EmployeePassportService {
 
     @Override
     public List<EmployeePassport> getAllHanded() {
-        return null;
+        return passportRepository.findEmployeePassportByIsHandedTrue();
     }
 
     @Override
     public List<EmployeePassport> getAllNotHanded() {
-        return null;
+        return passportRepository.findEmployeePassportByIsHandedFalse();
     }
 
     @Override

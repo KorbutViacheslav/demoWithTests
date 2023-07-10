@@ -11,8 +11,4 @@ public record PassportReadRec(String uuid,
                               Date handDate,
                               LocalDateTime expireDate,
                               Boolean isHanded) {
-    public PassportReadRec {
-        uuid = UUID.randomUUID().toString();
-        isHanded = Boolean.FALSE;
-    }
 }

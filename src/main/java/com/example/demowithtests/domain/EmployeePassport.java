@@ -24,7 +24,7 @@ public class EmployeePassport {
     private String number;
     private String bodyHanded;
     private Date handDate;
-    private LocalDateTime expireDate = LocalDateTime.now().plusYears(10);
+    private LocalDateTime expireDate;
     @Column(name = "is_handed")
     private Boolean isHanded = Boolean.FALSE;
 }

@@ -10,7 +10,7 @@ public interface EmployeePassportService {
 
     List<EmployeePassport> getAll();
 
-    EmployeePassport update(Long id, EmployeePassport employeePassport);
+    EmployeePassport update(Long id);
 
     void remove(Long id);
 

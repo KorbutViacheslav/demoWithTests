@@ -52,9 +52,8 @@ public class PassportController {
 
     @PutMapping("/users/passport/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public PassportRec updatePassport(@PathVariable("id") Long id, @RequestBody @Valid PassportRec passportRec) {
-        var employeePassport = passportMapper.toEmployeePassport(passportRec);
-        return passportMapper.toPassportRec(passportService.update(id, employeePassport));
+    public PassportRec updatePassport(@PathVariable("id") Long id) {
+        return passportMapper.toPassportRec(passportService.update(id));
     }
     @DeleteMapping("/users/passport/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

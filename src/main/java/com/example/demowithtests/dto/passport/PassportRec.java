@@ -1,9 +1,7 @@
 package com.example.demowithtests.dto.passport;
 
-import com.example.demowithtests.util.annotations.entity.Name;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -31,7 +29,6 @@ public record PassportRec(Long id,
                           Boolean isHanded) {
     public PassportRec {
         uuid = UUID.randomUUID().toString();
-        expireDate = LocalDateTime.now().plusYears(10);
         isHanded = Boolean.FALSE;
     }
 }

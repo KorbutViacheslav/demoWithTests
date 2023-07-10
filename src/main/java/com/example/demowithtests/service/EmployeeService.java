@@ -24,6 +24,7 @@ public interface EmployeeService {
     void removeById(Integer id);
 
     void removeAll();
+    public Employee handPassport(Integer employeeId, Long passportId);
 
 
 
