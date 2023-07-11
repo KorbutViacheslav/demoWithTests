@@ -169,4 +169,11 @@ public class EmployeeController implements EmployeeControllerApi {
     public List<EmployeeReadRec> getEmployeeNullAddresses() {
         return employeeMapper.toListEmployeeReadDto(employeeSearchService.getEmployeeNullAddresses());
     }
+
+    @PatchMapping("/user/{employeeId}/passport/{passportId}")
+    @ResponseStatus(HttpStatus.OK)
+    public EmployeeReadRec handedPassport(@PathVariable("employeeId") Integer employeeId,
+                                          @PathVariable("passportId") Long passportId) {
+        return employeeMapper.toReadDto(employeeService.handPassport(employeeId, passportId));
+    }
 }
