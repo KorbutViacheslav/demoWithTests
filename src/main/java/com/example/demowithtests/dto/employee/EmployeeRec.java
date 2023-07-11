@@ -32,6 +32,7 @@ public record EmployeeRec(Integer id,
                           Gender gender,
                           Instant startDate,
                           Set<AddressRec> addresses,
+
                           PassportReadRec passportReadRec) {
     public EmployeeRec {
         startDate = Instant.now();

@@ -253,7 +253,7 @@ public class ControllerTests {
     }
 
     private void extractedToReadDto() {
-        when(employeeConverter.toReadDto(any(Employee.class))).thenReturn(employeeRead);
+        when(employeeConverter.toReadRec(any(Employee.class))).thenReturn(employeeRead);
     }
 
     private void extractedToEmployee() {

@@ -42,7 +42,7 @@ public class EmployeeController implements EmployeeControllerApi {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<String> saveEmployee1(@RequestBody EmployeeRec request) {
         Employee e = employeeMapper.toEmployee(request);
-        EmployeeReadRec readDto = employeeMapper.toReadDto(employeeService.create(e));
+        EmployeeReadRec readDto = employeeMapper.toReadRec(employeeService.create(e));
         String massage = "The new employee is successfully created and added to database.\n" + readDto.toString();
         return ResponseEntity.ok(massage);
     }
@@ -59,7 +59,7 @@ public class EmployeeController implements EmployeeControllerApi {
     public Page<EmployeeReadRec> getPage(@RequestParam(defaultValue = "0") int page,
                                          @RequestParam(defaultValue = "2") int size) {
         Pageable paging = PageRequest.of(page, size);
-        return employeeService.getAllWithPagination(paging).map(employeeMapper::toReadDto);
+        return employeeService.getAllWithPagination(paging).map(employeeMapper::toReadRec);
     }
 
     //Get user by id
@@ -67,7 +67,7 @@ public class EmployeeController implements EmployeeControllerApi {
     @ResponseStatus(HttpStatus.OK)
     public EmployeeReadRec getEmployeeById(@PathVariable Integer id) {
         var employee = employeeService.getById(id);
-        var dto = employeeMapper.toReadDto(employee);
+        var dto = employeeMapper.toReadRec(employee);
         return dto;
     }
 
@@ -76,7 +76,7 @@ public class EmployeeController implements EmployeeControllerApi {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<String> refreshEmployee(@PathVariable("id") Integer id, @RequestBody @Valid EmployeeRec request) {
         Employee employee = employeeService.updateById(id, employeeMapper.toEmployee(request));
-        EmployeeReadRec readDto = employeeMapper.toReadDto(employee);
+        EmployeeReadRec readDto = employeeMapper.toReadRec(employee);
         String massage = "Employee was successful update!\n";
         return ResponseEntity.ok(massage + readDto.toString());
     }
@@ -105,7 +105,7 @@ public class EmployeeController implements EmployeeControllerApi {
                                                @RequestParam(defaultValue = "") List<String> sortList,
                                                @RequestParam(defaultValue = "DESC") Sort.Direction sortOrder) {
         return employeeSearchService.findByCountryContaining(country, page, size, sortList, sortOrder.toString())
-                .map(employeeMapper::toReadDto);
+                .map(employeeMapper::toReadRec);
     }
 
     @GetMapping("/users/c")
@@ -174,6 +174,6 @@ public class EmployeeController implements EmployeeControllerApi {
     @ResponseStatus(HttpStatus.OK)
     public EmployeeReadRec handedPassport(@PathVariable Integer employeeId,
                                           @PathVariable Long passportId) {
-        return employeeMapper.toReadDto(employeeService.handPassport(employeeId, passportId));
+        return employeeMapper.toReadRec(employeeService.handPassport(employeeId, passportId));
     }
 }
