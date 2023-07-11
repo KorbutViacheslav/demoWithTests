@@ -30,17 +30,15 @@ public class PassportService implements EmployeePassportService {
 
     @Override
     public EmployeePassport update(Long id) {
-        EmployeePassport eP = passportRepository.findById(id).map(
-                entity-> {
-                    entity.setHandDate(new Date());
-                    entity.setExpireDate(LocalDateTime.now().plusYears(10));
-                    entity.setIsHanded(Boolean.TRUE);
-                    return passportRepository.save(entity);
-                }).orElseThrow(()->new NotFoundException("Passport is absent"));
-        if(eP.getIsHanded()){
+        EmployeePassport employeePassport = passportRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Passport is absent"));
+        if (employeePassport.getIsHanded()) {
             throw new EntityNotFoundException("Passport is handed another employee");
         }
-        return eP;
+        employeePassport.setExpireDate(LocalDateTime.now().plusYears(10));
+        employeePassport.setHandDate(new Date());
+        employeePassport.setIsHanded(Boolean.TRUE);
+        return passportRepository.save(employeePassport);
     }
 
     @Override

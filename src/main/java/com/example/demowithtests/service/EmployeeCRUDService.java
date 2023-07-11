@@ -121,10 +121,11 @@ public class EmployeeCRUDService implements EmployeeService {
     @Override
     public Employee handPassport(Integer employeeId, Long passportId) {
         Employee employee = getById(employeeId);
-        if(employee.getEmployeePassport().getIsHanded()){
+        /*if(employee.getEmployeePassport().getIsHanded()){
             throw new RuntimeException("This employee have passport");
-        }
+        }*/
         EmployeePassport employeePassport = employeePassportService.update(passportId);
+        System.out.println(employeePassport.toString());
         employee.setEmployeePassport(employeePassport);
         return employeeRepository.save(employee);
     }

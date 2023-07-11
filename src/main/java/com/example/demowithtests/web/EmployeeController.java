@@ -172,8 +172,8 @@ public class EmployeeController implements EmployeeControllerApi {
 
     @PatchMapping("/user/{employeeId}/passport/{passportId}")
     @ResponseStatus(HttpStatus.OK)
-    public EmployeeReadRec handedPassport(@PathVariable("employeeId") Integer employeeId,
-                                          @PathVariable("passportId") Long passportId) {
+    public EmployeeReadRec handedPassport(@PathVariable Integer employeeId,
+                                          @PathVariable Long passportId) {
         return employeeMapper.toReadDto(employeeService.handPassport(employeeId, passportId));
     }
 }
