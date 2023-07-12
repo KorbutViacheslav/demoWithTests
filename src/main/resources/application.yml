@@ -1,6 +1,12 @@
 # Spring Boot configuration
 spring:
-  #application:
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 200MB
+      max-request-size: 215MB
+    #application:
    # name: service
   #main:
    # allow-bean-definition-overriding: true
