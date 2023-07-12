@@ -5,7 +5,6 @@ import com.example.demowithtests.dto.passport.PassportReadRec;
 import com.example.demowithtests.dto.passport.PassportRec;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;

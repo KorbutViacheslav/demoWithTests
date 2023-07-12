@@ -1,5 +1,6 @@
 package com.example.demowithtests.dto.passport;
 
+import com.example.demowithtests.domain.Photo;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.validation.constraints.NotNull;
@@ -26,7 +27,8 @@ public record PassportRec(Long id,
                           String bodyHanded,
                           Date handDate,
                           LocalDateTime expireDate,
-                          Boolean isHanded) {
+                          Boolean isHanded,
+                          Photo photo) {
     public PassportRec {
         uuid = UUID.randomUUID().toString();
         isHanded = Boolean.FALSE;

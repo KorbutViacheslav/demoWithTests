@@ -139,7 +139,7 @@ public class RepositoryTests {
 
         assertAll(
                 () -> assertThat(employees.size()).isGreaterThan(0),
-                () -> assertThat(employees.get(0).getName()).isEqualTo("Adam"),
+                () -> assertThat(employees.get(0).getName()).isEqualTo("Mark"),
                 () -> assertThat(employees.get(0).getId()).isEqualTo(2));
     }
 

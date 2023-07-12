@@ -6,7 +6,9 @@ import com.example.demowithtests.dto.passport.PassportRec;
 import com.example.demowithtests.service.passport.EmployeePassportService;
 import com.example.demowithtests.util.config.mapstruct.PassportMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -61,6 +63,16 @@ public class PassportController {
         String massage =  "Passport with ID " + id + " has been deleted.";
         passportService.remove(id);
         return ResponseEntity.ok(massage);
+    }
+    @PatchMapping("/user/passport/{passportId}/photo/{photoId}")
+    @ResponseStatus(HttpStatus.OK)
+    public PassportReadRec pastePhoto(@PathVariable Long passportId, @PathVariable Long photoId){
+        return passportMapper.toPassportReadRec(passportService.pastePhoto(passportId,photoId));
+    }
+    @PatchMapping("/user/passport/photo")
+    @ResponseStatus(HttpStatus.OK)
+    public PassportReadRec pastePhotoHeaders(@RequestHeader("passportId") Long passportId, @RequestHeader("photoId") Long photoId) {
+        return passportMapper.toPassportReadRec(passportService.pastePhoto(passportId, photoId));
     }
 
 }

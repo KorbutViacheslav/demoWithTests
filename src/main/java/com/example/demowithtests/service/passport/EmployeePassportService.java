@@ -20,7 +20,5 @@ public interface EmployeePassportService {
 
     List<EmployeePassport> getAllNotHanded();
 
-    EmployeePassport addPhoto(Long id, String link);
-
-    EmployeePassport handPassport(Long id, String link);
+    public EmployeePassport pastePhoto(Long passportId, Long photoId);
 }

@@ -1,7 +1,10 @@
 package com.example.demowithtests.service.passport;
 
+import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.domain.EmployeePassport;
+import com.example.demowithtests.domain.Photo;
 import com.example.demowithtests.repository.EmployeePassportRepository;
+import com.example.demowithtests.service.PhotoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
@@ -17,6 +20,7 @@ import java.util.Optional;
 public class PassportService implements EmployeePassportService {
 
     private final EmployeePassportRepository passportRepository;
+    private final PhotoService photoService;
 
     @Override
     public EmployeePassport create(EmployeePassport employeePassport) {
@@ -61,13 +65,17 @@ public class PassportService implements EmployeePassportService {
         return passportRepository.findEmployeePassportByIsHandedFalse();
     }
 
-    @Override
-    public EmployeePassport addPhoto(Long id, String link) {
-        return null;
-    }
 
     @Override
-    public EmployeePassport handPassport(Long id, String link) {
-        return null;
+    public EmployeePassport pastePhoto(Long passportId, Long photoId) {
+        EmployeePassport passport = getPassportById(passportId).orElseThrow(
+                () -> new NotFoundException("Passport is missing for pasting a photo!"));
+        if (passport.getPhoto() != null) {
+            throw new RuntimeException("This passport already has a photo!");
+        }
+        Photo photo = photoService.getPhotoById(photoId).orElseThrow(
+                () -> new NotFoundException("Photo is absent!"));
+        passport.setPhoto(photo);
+        return passportRepository.save(passport);
     }
 }

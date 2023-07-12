@@ -25,6 +25,11 @@ public class EmployeePassport {
     private String bodyHanded;
     private Date handDate;
     private LocalDateTime expireDate;
+
     @Column(name = "is_handed")
     private Boolean isHanded = Boolean.FALSE;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "photo_id",referencedColumnName = "id")
+    private Photo photo;
 }

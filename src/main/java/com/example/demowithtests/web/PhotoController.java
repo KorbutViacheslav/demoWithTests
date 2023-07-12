@@ -2,6 +2,7 @@ package com.example.demowithtests.web;
 
 import com.example.demowithtests.domain.Photo;
 import com.example.demowithtests.service.PhotoService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,8 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping("/photos")
+@Tag(name = "Photo", description = "Photo API")
 public class PhotoController {
 
     private final PhotoService photoService;

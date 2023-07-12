@@ -170,10 +170,14 @@ public class EmployeeController implements EmployeeControllerApi {
         return employeeMapper.toListEmployeeReadDto(employeeSearchService.getEmployeeNullAddresses());
     }
 
-    @PatchMapping("/user/{employeeId}/passport/{passportId}")
+    /**
+     * @implNote home task №13. Handed passport to employee.
+     * Used request header to transfer param.
+     */
+
+    @PatchMapping("/user/passport/")
     @ResponseStatus(HttpStatus.OK)
-    public EmployeeReadRec handedPassport(@PathVariable Integer employeeId,
-                                          @PathVariable Long passportId) {
+    public EmployeeReadRec handedPassport(@RequestHeader("employeeId") Integer employeeId, @RequestHeader("passportId") Long passportId) {
         return employeeMapper.toReadRec(employeeService.handPassport(employeeId, passportId));
     }
 }
