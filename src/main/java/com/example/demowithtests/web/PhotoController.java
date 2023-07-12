@@ -1,7 +1,9 @@
 package com.example.demowithtests.web;
+
 import com.example.demowithtests.domain.Photo;
 import com.example.demowithtests.service.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -22,12 +24,16 @@ public class PhotoController {
         this.photoService = photoService;
     }
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> uploadPhoto(@RequestParam("name") String name,
-                                         @RequestParam("file") MultipartFile file) throws IOException {
-        byte[] data = file.getBytes();
-        Photo photo = photoService.savePhoto(name, data);
-        return ResponseEntity.ok(photo);
+    @PostMapping
+    public ResponseEntity<String> uploadPhoto(@RequestParam("file") MultipartFile file) {
+        try {
+            photoService.savePhoto(file);
+            return ResponseEntity.status(HttpStatus.OK).
+                    body(String.format("File uploaded successfully: %s", file.getOriginalFilename()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
+                    body(String.format("Could not upload the file: %s", file.getOriginalFilename()));
+        }
     }
 
     @GetMapping("/{id}")
