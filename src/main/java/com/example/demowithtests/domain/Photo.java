@@ -1,4 +1,5 @@
 package com.example.demowithtests.domain;
+
 import lombok.Data;
 
 import javax.persistence.*;
@@ -14,5 +15,8 @@ public class Photo {
     private String name;
     @Lob
     private byte[] data;
+
+    @OneToOne(mappedBy = "photo")
+    private EmployeePassport passport;
 
 }

@@ -1,32 +1,26 @@
 package com.example.demowithtests.web;
 
-import com.example.demowithtests.domain.Photo;
-import com.example.demowithtests.service.photo.PhotoServiceImpl;
+import com.example.demowithtests.service.photo.PhotoService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
-import org.webjars.NotFoundException;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/photos")
 @Tag(name = "Photo", description = "Photo API")
 public class PhotoController {
-    private final PhotoServiceImpl photoServiceImpl;
+    private final PhotoService photoService;
 
     @PostMapping
-    public ResponseEntity<String> uploadPhoto(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> savePhoto(@RequestParam("file") MultipartFile file) {
         try {
-            photoServiceImpl.savePhoto(file);
+            photoService.savePhoto(file);
             return ResponseEntity.ok()
                     .body(String.format("File uploaded successfully: %s",
                             file.getOriginalFilename()));
@@ -38,40 +32,43 @@ public class PhotoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<byte[]> getPhoto(@PathVariable("id") Long id) {
+    public ResponseEntity<byte[]> getPhotoById(@PathVariable("id") Long id) {
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)
-                .body(photoServiceImpl.getPhotoById(id).getData());
+                .body(photoService.getPhotoById(id).getData());
     }
 
     @GetMapping("/name/{name}")
-    public ResponseEntity<byte[]> getImageByName(@PathVariable("name") String name) {
+    public ResponseEntity<byte[]> getPhotoByName(@PathVariable("name") String name) {
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_JPEG)
-                .body(photoServiceImpl.getPhotoByName(name).getData());
+                .body(photoService.getPhotoByName(name).getData());
     }
 
     @GetMapping("/namE/{id}")
-    public ResponseEntity<String> getName(@PathVariable Long id) {
+    public ResponseEntity<String> getPhotoNameById(@PathVariable Long id) {
         return ResponseEntity.ok()
-                .body(photoServiceImpl.getName(id));
+                .body(photoService.getName(id));
     }
 
-    /*    @GetMapping("/list")
-        public ResponseEntity<List<byte[]>> getAll(){
-            List<Photo> list=photoServiceImpl.getListPhoto();
-            List<byte[]> b = list.stream().map(Photo::getData).toList();
-            return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(b);
-        }*/
     @GetMapping("/list")
-    public ResponseEntity<List<byte[]>> getAllPhotos() {
-        List<Photo> photoList = photoServiceImpl.getListPhoto();
-        List<byte[]> imageBytesList = photoList.stream()
-                .map(Photo::getData)
-                .collect(Collectors.toList());
-        imageBytesList.forEach(e->{
-            return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(e);
-        });
+    public ResponseEntity<Map<Long, String>> getAllNamePhotos() {
+        return ResponseEntity.ok().body(photoService.getMapPhoto());
     }
 
+    @GetMapping("/pas/{id}")
+    public ResponseEntity<String> getPassportNumber(@PathVariable Long id) {
+        return ResponseEntity.ok()
+                .body(String.format("Photo by id: %s Have id of passport: %s",
+                        id,
+                        photoService.getPassportNumber(id)));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletePhotoById(@PathVariable Long id) {
+        String massage = String.format("Successfully! Photo by id: %s was deleted!", id);
+        photoService.removePhotoById(id);
+        return ResponseEntity.ok().body(massage);
+
+    }
 }

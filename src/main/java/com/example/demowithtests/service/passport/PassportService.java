@@ -50,8 +50,8 @@ public class PassportService implements EmployeePassportService {
     }
 
     @Override
-    public Optional<EmployeePassport> getPassportById(Long id) {
-        return passportRepository.findById(id);
+    public EmployeePassport getPassportById(Long id) {
+        return passportRepository.findById(id).orElseThrow(()->new NotFoundException("Passport is absent in database"));
     }
 
     @Override
@@ -67,8 +67,7 @@ public class PassportService implements EmployeePassportService {
 
     @Override
     public EmployeePassport pastePhoto(Long passportId, Long photoId) {
-        EmployeePassport passport = getPassportById(passportId).orElseThrow(
-                () -> new NotFoundException("Passport is missing for pasting a photo!"));
+        EmployeePassport passport = getPassportById(passportId);
         if (passport.getPhoto() != null) {
             throw new RuntimeException("This passport already has a photo!");
         }

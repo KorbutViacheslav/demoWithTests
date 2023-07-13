@@ -14,7 +14,7 @@ public interface EmployeePassportService {
 
     void remove(Long id);
 
-    Optional<EmployeePassport> getPassportById(Long id);
+    EmployeePassport getPassportById(Long id);
 
     List<EmployeePassport> getAllHanded();
 

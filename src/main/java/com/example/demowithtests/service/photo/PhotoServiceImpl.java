@@ -13,6 +13,8 @@ import javax.transaction.Transactional;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -59,17 +61,27 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public List<Photo> getListPhoto() {
+    public Map<Long, String> getMapPhoto() {
         List<Photo> photos = photoRepository.findAll();
         if (photos.isEmpty()) {
             throw new NotFoundException("List of photos is empty!");
         }
-        return photos;
+        return photos.stream().collect(Collectors.toMap(Photo::getId, Photo::getName));
     }
 
     private boolean presetPhoto(Long id) {
         return photoRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Passport is absent in database")) != null;
+                .orElseThrow(() -> new NotFoundException("Photo is absent in database")) != null;
+    }
+
+    @Override
+    public Long getPassportNumber(Long id) {
+        Photo photo = photoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Photo is absent in database"));
+        if (photo.getPassport() == null) {
+            throw new NotFoundException("The photo is not pasted in the passport!");
+        }
+        return photo.getPassport().getId();
     }
 
 }

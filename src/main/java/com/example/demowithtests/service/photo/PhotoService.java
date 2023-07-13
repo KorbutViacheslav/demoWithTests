@@ -3,7 +3,7 @@ package com.example.demowithtests.service.photo;
 import com.example.demowithtests.domain.Photo;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.util.Map;
 
 public interface PhotoService {
     Photo savePhoto(MultipartFile file);
@@ -16,6 +16,7 @@ public interface PhotoService {
 
     void removePhotoById(Long id);
 
-    List<Photo> getListPhoto();
+    Map<Long, String> getMapPhoto();
+    Long getPassportNumber(Long id);
 
 }

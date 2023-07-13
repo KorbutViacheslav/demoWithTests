@@ -40,13 +40,9 @@ public class PassportController {
 
     @GetMapping("/users/passport/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public PassportReadRec getPassport(@PathVariable Long id) {
-        Optional<EmployeePassport> employeePassport = passportService.getPassportById(id);
-        if (employeePassport.isPresent()) {
-            return passportMapper.toPassportReadRec(employeePassport.get());
-        } else {
-            throw new EntityNotFoundException("Passport is absent in database");
-        }
+    public PassportReadRec getPassportById(@PathVariable Long id) {
+        EmployeePassport employeePassport = passportService.getPassportById(id);
+            return passportMapper.toPassportReadRec(employeePassport);
     }
 
     @PutMapping("/users/passport/{id}")
