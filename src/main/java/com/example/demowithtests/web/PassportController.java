@@ -6,9 +6,7 @@ import com.example.demowithtests.dto.passport.PassportRec;
 import com.example.demowithtests.service.passport.EmployeePassportService;
 import com.example.demowithtests.util.config.mapstruct.PassportMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -45,8 +43,7 @@ public class PassportController {
     public PassportReadRec getPassport(@PathVariable Long id) {
         Optional<EmployeePassport> employeePassport = passportService.getPassportById(id);
         if (employeePassport.isPresent()) {
-            EmployeePassport ep = employeePassport.get();
-            return passportMapper.toPassportReadRec(ep);
+            return passportMapper.toPassportReadRec(employeePassport.get());
         } else {
             throw new EntityNotFoundException("Passport is absent in database");
         }
@@ -57,21 +54,27 @@ public class PassportController {
     public PassportRec updatePassport(@PathVariable("id") Long id) {
         return passportMapper.toPassportRec(passportService.update(id));
     }
+
     @DeleteMapping("/users/passport/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<String> removePassport(@PathVariable("id") Long id){
-        String massage =  "Passport with ID " + id + " has been deleted.";
+    public ResponseEntity<String> removePassport(@PathVariable("id") Long id) {
+        String massage = "Passport with ID " + id + " has been deleted.";
         passportService.remove(id);
         return ResponseEntity.ok(massage);
     }
+
+    // TODO: 12.07.2023 Example bad controller. Bad practice transfer param to path variable!!!
     @PatchMapping("/user/passport/{passportId}/photo/{photoId}")
     @ResponseStatus(HttpStatus.OK)
-    public PassportReadRec pastePhoto(@PathVariable Long passportId, @PathVariable Long photoId){
-        return passportMapper.toPassportReadRec(passportService.pastePhoto(passportId,photoId));
+    public PassportReadRec pastePhoto(@PathVariable Long passportId,
+                                      @PathVariable Long photoId) {
+        return passportMapper.toPassportReadRec(passportService.pastePhoto(passportId, photoId));
     }
+
     @PatchMapping("/user/passport/photo")
     @ResponseStatus(HttpStatus.OK)
-    public PassportReadRec pastePhotoHeaders(@RequestHeader("passportId") Long passportId, @RequestHeader("photoId") Long photoId) {
+    public PassportReadRec pastePhotoHeaders(@RequestHeader("passportId") Long passportId,
+                                             @RequestHeader("photoId") Long photoId) {
         return passportMapper.toPassportReadRec(passportService.pastePhoto(passportId, photoId));
     }
 

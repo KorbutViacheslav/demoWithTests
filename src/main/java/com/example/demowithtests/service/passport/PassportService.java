@@ -1,6 +1,5 @@
 package com.example.demowithtests.service.passport;
 
-import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.domain.EmployeePassport;
 import com.example.demowithtests.domain.Photo;
 import com.example.demowithtests.repository.EmployeePassportRepository;

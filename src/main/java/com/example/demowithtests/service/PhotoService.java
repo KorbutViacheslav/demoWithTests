@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.webjars.NotFoundException;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -29,6 +30,17 @@ public class PhotoService {
 
     public Optional<Photo> getPhotoById(Long id) {
         return photoRepository.findById(id);
+    }
+    public byte[] getPhotoByName(String name) {
+        Optional<Photo> photo = photoRepository.findPhotoByName(name);
+        if(photo.isPresent()){
+            return photo.get().getData();
+        }else {
+            throw new NotFoundException("Photo not found!");
+        }
+    }
+    public String getName(Long id){
+        return photoRepository.findById(id).get().getName();
     }
 
 }
