@@ -69,6 +69,7 @@ public class PassportService implements EmployeePassportService {
     public EmployeePassport pastePhoto(Long passportId, Long photoId) {
         EmployeePassport passport = getPassportById(passportId);
         if (passport.getPhoto() != null) {
+
             throw new RuntimeException("This passport already has a photo!");
         }
         Photo photo = photoServiceImpl.getPhotoById(photoId);
