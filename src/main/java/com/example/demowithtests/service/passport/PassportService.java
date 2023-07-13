@@ -12,7 +12,6 @@ import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +50,8 @@ public class PassportService implements EmployeePassportService {
 
     @Override
     public EmployeePassport getPassportById(Long id) {
-        return passportRepository.findById(id).orElseThrow(()->new NotFoundException("Passport is absent in database"));
+        return passportRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Passport is absent in database"));
     }
 
     @Override
@@ -69,7 +69,6 @@ public class PassportService implements EmployeePassportService {
     public EmployeePassport pastePhoto(Long passportId, Long photoId) {
         EmployeePassport passport = getPassportById(passportId);
         if (passport.getPhoto() != null) {
-
             throw new RuntimeException("This passport already has a photo!");
         }
         Photo photo = photoServiceImpl.getPhotoById(photoId);

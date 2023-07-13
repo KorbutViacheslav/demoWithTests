@@ -12,10 +12,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,7 +40,7 @@ public class PassportController {
     @ResponseStatus(HttpStatus.OK)
     public PassportReadRec getPassportById(@PathVariable Long id) {
         EmployeePassport employeePassport = passportService.getPassportById(id);
-            return passportMapper.toPassportReadRec(employeePassport);
+        return passportMapper.toPassportReadRec(employeePassport);
     }
 
     @PutMapping("/users/passport/{id}")
@@ -54,9 +52,9 @@ public class PassportController {
     @DeleteMapping("/users/passport/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<String> removePassport(@PathVariable("id") Long id) {
-        String massage = "Passport with ID " + id + " has been deleted.";
+        String massage = String.format("Passport with ID %s has been deleted.", id);
         passportService.remove(id);
-        return ResponseEntity.ok(massage);
+        return ResponseEntity.ok().body(massage);
     }
 
     // TODO: 12.07.2023 Example bad controller. Bad practice transfer param to path variable!!!

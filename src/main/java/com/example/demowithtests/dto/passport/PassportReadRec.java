@@ -1,6 +1,7 @@
 package com.example.demowithtests.dto.passport;
 
 import com.example.demowithtests.domain.Photo;
+import com.example.demowithtests.dto.photo.PhotoRec;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -13,5 +14,5 @@ public record PassportReadRec(String uuid,
                               Date handDate,
                               LocalDateTime expireDate,
                               Boolean isHanded,
-                              Photo photo) {
+                              PhotoRec photoRec) {
 }

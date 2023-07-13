@@ -15,8 +15,9 @@ public interface PassportMapper {
 
     @Mapping(target = "id", ignore = true)
     EmployeePassport toEmployeePassport(PassportRec passportRec);
-
+    @Mapping(source = "photo", target = "photoRec")
     PassportRec toPassportRec(EmployeePassport employeePassport);
+    @Mapping(source = "photo", target = "photoRec")
     PassportReadRec toPassportReadRec(EmployeePassport employeePassport);
 
     List<PassportReadRec> toListPassportReadRec(List<EmployeePassport> list);

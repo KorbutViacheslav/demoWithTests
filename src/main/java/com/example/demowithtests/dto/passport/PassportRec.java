@@ -1,6 +1,7 @@
 package com.example.demowithtests.dto.passport;
 
 import com.example.demowithtests.domain.Photo;
+import com.example.demowithtests.dto.photo.PhotoRec;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -32,7 +33,7 @@ public record PassportRec(@Hidden
                           @Hidden
                           Boolean isHanded,
                           @Hidden
-                          Photo photo) {
+                          PhotoRec photoRec) {
     public PassportRec {
         uuid = UUID.randomUUID().toString();
         isHanded = Boolean.FALSE;
