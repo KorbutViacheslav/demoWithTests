@@ -15,13 +15,14 @@ import java.util.List;
 public interface EmployeeMapper {
     EmployeeMapper INSTANCE = Mappers.getMapper(EmployeeMapper.class);
 
-    @Mapping(source = "employeePassport", target = "passportReadRec")
+    @Mapping(source = "entity.employeePassport.photo", target = "passportReadRec.photoRec")
     EmployeeRec toEmployeeDto(Employee entity);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(source = "dto.passportReadRec.photoRec", target = "employeePassport.photo")
     Employee toEmployee(EmployeeRec dto);
 
-    @Mapping(source = "employeePassport", target = "passportReadRec")
+    @Mapping(source = "employee.employeePassport.photo", target = "passportReadRec.photoRec")
     EmployeeReadRec toReadRec(Employee employee);
 
     List<EmployeeReadRec> toListEmployeeReadDto(List<Employee> employees);

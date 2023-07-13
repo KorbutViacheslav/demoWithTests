@@ -14,11 +14,14 @@ public interface PassportMapper {
     PassportMapper INSTANCE = Mappers.getMapper(PassportMapper.class);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(source = "passportRec.photoRec", target = "photo")
     EmployeePassport toEmployeePassport(PassportRec passportRec);
-    @Mapping(source = "photo", target = "photoRec")
+    @Mapping(source = "employeePassport.photo", target = "photoRec")
     PassportRec toPassportRec(EmployeePassport employeePassport);
-    @Mapping(source = "photo", target = "photoRec")
+    @Mapping(source = "employeePassport.photo", target = "photoRec")
     PassportReadRec toPassportReadRec(EmployeePassport employeePassport);
+    @Mapping(source = "passportRec.photoRec", target = "photoRec")
+    PassportReadRec toPassportReadRec(PassportRec passportRec);
 
     List<PassportReadRec> toListPassportReadRec(List<EmployeePassport> list);
 }
