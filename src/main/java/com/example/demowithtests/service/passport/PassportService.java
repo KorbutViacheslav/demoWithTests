@@ -3,7 +3,7 @@ package com.example.demowithtests.service.passport;
 import com.example.demowithtests.domain.EmployeePassport;
 import com.example.demowithtests.domain.Photo;
 import com.example.demowithtests.repository.EmployeePassportRepository;
-import com.example.demowithtests.service.PhotoService;
+import com.example.demowithtests.service.photo.PhotoServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
@@ -19,7 +19,7 @@ import java.util.Optional;
 public class PassportService implements EmployeePassportService {
 
     private final EmployeePassportRepository passportRepository;
-    private final PhotoService photoService;
+    private final PhotoServiceImpl photoServiceImpl;
 
     @Override
     public EmployeePassport create(EmployeePassport employeePassport) {
@@ -72,8 +72,7 @@ public class PassportService implements EmployeePassportService {
         if (passport.getPhoto() != null) {
             throw new RuntimeException("This passport already has a photo!");
         }
-        Photo photo = photoService.getPhotoById(photoId).orElseThrow(
-                () -> new NotFoundException("Photo is absent!"));
+        Photo photo = photoServiceImpl.getPhotoById(photoId);
         passport.setPhoto(photo);
         return passportRepository.save(passport);
     }
