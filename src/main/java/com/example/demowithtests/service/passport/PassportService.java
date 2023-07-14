@@ -3,12 +3,14 @@ package com.example.demowithtests.service.passport;
 import com.example.demowithtests.domain.EmployeePassport;
 import com.example.demowithtests.domain.Photo;
 import com.example.demowithtests.repository.EmployeePassportRepository;
-import com.example.demowithtests.service.photo.PhotoServiceImpl;
+import com.example.demowithtests.service.photo.PhotoService;
+import com.example.demowithtests.util.exception.passport.PassportAlreadyPhotoException;
+import com.example.demowithtests.util.exception.passport.PassportIsHandedException;
+import com.example.demowithtests.util.exception.passport.PassportNoOneFindException;
+import com.example.demowithtests.util.exception.passport.PassportNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
 
-import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -18,7 +20,7 @@ import java.util.List;
 public class PassportService implements EmployeePassportService {
 
     private final EmployeePassportRepository passportRepository;
-    private final PhotoServiceImpl photoServiceImpl;
+    private final PhotoService photoService;
 
     @Override
     public EmployeePassport create(EmployeePassport employeePassport) {
@@ -33,9 +35,9 @@ public class PassportService implements EmployeePassportService {
     @Override
     public EmployeePassport update(Long id) {
         EmployeePassport employeePassport = passportRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Passport is absent"));
+                .orElseThrow(PassportNotFoundException::new);
         if (employeePassport.getIsHanded()) {
-            throw new EntityNotFoundException("Passport is handed another employee");
+            throw new PassportIsHandedException();
         }
         employeePassport.setExpireDate(LocalDateTime.now().plusYears(10));
         employeePassport.setHandDate(new Date());
@@ -45,23 +47,33 @@ public class PassportService implements EmployeePassportService {
 
     @Override
     public void remove(Long id) {
-        passportRepository.deleteById(id);
+        EmployeePassport passport = passportRepository.findById(id)
+                .orElseThrow(PassportNotFoundException::new);
+        passportRepository.deleteById(passport.getId());
     }
 
     @Override
     public EmployeePassport getPassportById(Long id) {
         return passportRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Passport is absent in database"));
+                .orElseThrow(PassportNotFoundException::new);
     }
 
     @Override
     public List<EmployeePassport> getAllHanded() {
-        return passportRepository.findEmployeePassportByIsHandedTrue();
+        List<EmployeePassport> handedPassports = passportRepository.findEmployeePassportByIsHandedTrue();
+        if (handedPassports.isEmpty()) {
+            throw new PassportNoOneFindException();
+        }
+        return handedPassports;
     }
 
     @Override
     public List<EmployeePassport> getAllNotHanded() {
-        return passportRepository.findEmployeePassportByIsHandedFalse();
+        List<EmployeePassport> handedPassports = passportRepository.findEmployeePassportByIsHandedFalse();
+        if (handedPassports.isEmpty()) {
+            throw new PassportNoOneFindException();
+        }
+        return handedPassports;
     }
 
 
@@ -69,9 +81,9 @@ public class PassportService implements EmployeePassportService {
     public EmployeePassport pastePhoto(Long passportId, Long photoId) {
         EmployeePassport passport = getPassportById(passportId);
         if (passport.getPhoto() != null) {
-            throw new RuntimeException("This passport already has a photo!");
+            throw new PassportAlreadyPhotoException();
         }
-        Photo photo = photoServiceImpl.getPhotoById(photoId);
+        Photo photo = photoService.getPhotoById(photoId);
         passport.setPhoto(photo);
         return passportRepository.save(passport);
     }

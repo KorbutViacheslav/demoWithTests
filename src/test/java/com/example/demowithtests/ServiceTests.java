@@ -5,7 +5,7 @@ import com.example.demowithtests.domain.Gender;
 import com.example.demowithtests.repository.EmployeeRepository;
 import com.example.demowithtests.service.employee.EmployeeCRUDService;
 import com.example.demowithtests.service.employee.EmployeeSearchSortService;
-import com.example.demowithtests.util.exception.ResourceNotFoundException;
+import com.example.demowithtests.util.exception.employee.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
