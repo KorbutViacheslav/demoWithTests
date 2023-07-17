@@ -2,9 +2,11 @@ package com.example.demowithtests.service.employee;
 
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.domain.EmployeePassport;
+import com.example.demowithtests.domain.WorkPlace;
 import com.example.demowithtests.repository.EmployeePassportRepository;
 import com.example.demowithtests.repository.EmployeeRepository;
 import com.example.demowithtests.service.passport.EmployeePassportService;
+import com.example.demowithtests.service.work_place.WorkPlaceService;
 import com.example.demowithtests.util.annotations.entity.ActivateCustomAnnotations;
 import com.example.demowithtests.util.annotations.entity.Name;
 import com.example.demowithtests.util.annotations.entity.ToLowerCase;
@@ -19,10 +21,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -33,6 +32,7 @@ public class EmployeeCRUDService implements EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final EmployeePassportRepository employeePassportRepository;
     private final EmployeePassportService employeePassportService;
+    private final WorkPlaceService workPlaceService;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -127,6 +127,13 @@ public class EmployeeCRUDService implements EmployeeService {
         EmployeePassport employeePassport = employeePassportService
                 .update(passportId);
         employee.setEmployeePassport(employeePassport);
+        return employeeRepository.save(employee);
+    }
+    @Override
+    public Employee reserveWorkPlace(Integer employeeId, Long workPlaceId){
+        Employee employee = getById(employeeId);
+        WorkPlace workPlace = workPlaceService.getWorkPlaceById(workPlaceId);
+        employee.setWorkPlaces(new HashSet<>(List.of(workPlace)));
         return employeeRepository.save(employee);
     }
 

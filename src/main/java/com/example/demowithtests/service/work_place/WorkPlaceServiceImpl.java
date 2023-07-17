@@ -21,7 +21,7 @@ public class WorkPlaceServiceImpl implements WorkPlaceService {
 
     @Override
     public WorkPlace getWorkPlaceById(Long id) {
-        return workPlaceRepository.findById(id).orElseThrow(()->new NotFoundException("Work place is absent!"));
+        return workPlaceRepository.findById(id).orElseThrow(() -> new NotFoundException("Work place is absent!"));
     }
 
     @Override

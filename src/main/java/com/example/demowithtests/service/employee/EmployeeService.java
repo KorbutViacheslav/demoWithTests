@@ -24,10 +24,10 @@ public interface EmployeeService {
     void removeById(Integer id);
 
     void removeAll();
-    public Employee handPassport(Integer employeeId, Long passportId);
 
+    Employee handPassport(Integer employeeId, Long passportId);
 
-
+    Employee reserveWorkPlace(Integer employeeId, Long workPlaceId);
 
 
 }

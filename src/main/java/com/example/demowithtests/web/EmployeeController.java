@@ -177,7 +177,18 @@ public class EmployeeController implements EmployeeControllerApi {
 
     @PatchMapping("/user/passport/")
     @ResponseStatus(HttpStatus.OK)
-    public EmployeeReadRec handedPassport(@RequestHeader("employeeId") Integer employeeId, @RequestHeader("passportId") Long passportId) {
+    public EmployeeReadRec handedPassport(@RequestHeader("employeeId") Integer employeeId,
+                                          @RequestHeader("passportId") Long passportId) {
         return employeeMapper.toReadRec(employeeService.handPassport(employeeId, passportId));
+    }
+
+    /**
+     * @implNote home task №14. reserve work place.
+     */
+    @PatchMapping("/user/place")
+    @ResponseStatus(HttpStatus.OK)
+    public Employee reserveWorkPlace(@RequestHeader("employeeId") Integer employeeId,
+                                        @RequestHeader("workPlaceId") Long workPlaceId){
+        return employeeService.reserveWorkPlace(employeeId,workPlaceId);
     }
 }
