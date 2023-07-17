@@ -34,7 +34,8 @@ public class PassportService implements EmployeePassportService {
 
     @Override
     public EmployeePassport update(Long id) {
-        EmployeePassport employeePassport = passportRepository.findById(id)
+        EmployeePassport employeePassport = passportRepository
+                .findById(id)
                 .orElseThrow(PassportNotFoundException::new);
         if (employeePassport.getIsHanded()) {
             throw new PassportIsHandedException();

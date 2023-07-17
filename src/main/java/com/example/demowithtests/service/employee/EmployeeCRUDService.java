@@ -124,7 +124,8 @@ public class EmployeeCRUDService implements EmployeeService {
                 throw new RuntimeException("This employee have passport");
             }
         }
-        EmployeePassport employeePassport = employeePassportService.update(passportId);
+        EmployeePassport employeePassport = employeePassportService
+                .update(passportId);
         employee.setEmployeePassport(employeePassport);
         return employeeRepository.save(employee);
     }
