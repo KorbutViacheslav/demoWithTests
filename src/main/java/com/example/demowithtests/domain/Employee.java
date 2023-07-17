@@ -2,6 +2,7 @@ package com.example.demowithtests.domain;
 
 import com.example.demowithtests.util.annotations.entity.Name;
 import com.example.demowithtests.util.annotations.entity.ToLowerCase;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -41,7 +42,15 @@ public class Employee {
     private Set<Address> addresses = new HashSet<>();
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "passport_id",referencedColumnName = "id")
+    @JoinColumn(name = "passport_id", referencedColumnName = "id")
     private EmployeePassport employeePassport;
+
+    @ManyToMany
+    @JoinTable(
+            name = "users_work_places",
+            joinColumns = @JoinColumn(name = "employee_id"),
+            inverseJoinColumns = @JoinColumn(name = "work_places_id")
+    )
+    private Set<WorkPlace> workPlaces;
 
 }
