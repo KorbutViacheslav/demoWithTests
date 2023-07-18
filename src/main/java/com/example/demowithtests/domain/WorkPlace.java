@@ -1,17 +1,18 @@
 package com.example.demowithtests.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 
 @Builder
-@Data
+@Getter
+@Setter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -29,7 +30,7 @@ public class WorkPlace {
 
     private Boolean isActive = Boolean.TRUE;
 
-    @ManyToMany(mappedBy = "workPlaces")
+    @ManyToMany(mappedBy = "workPlaces",fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<Employee> employee = new HashSet<>();
 
