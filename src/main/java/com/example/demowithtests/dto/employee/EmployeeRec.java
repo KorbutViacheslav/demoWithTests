@@ -1,6 +1,7 @@
 package com.example.demowithtests.dto.employee;
 
 import com.example.demowithtests.domain.Gender;
+import com.example.demowithtests.domain.WorkPlace;
 import com.example.demowithtests.dto.addres.AddressRec;
 import com.example.demowithtests.dto.passport.PassportReadRec;
 import com.example.demowithtests.dto.passport.PassportRec;
@@ -33,7 +34,8 @@ public record EmployeeRec(Integer id,
                           Instant startDate,
                           Set<AddressRec> addresses,
 
-                          PassportReadRec passportReadRec) {
+                          PassportReadRec passportReadRec,
+                          Set<WorkPlace> workPlaces) {
     public EmployeeRec {
         startDate = Instant.now();
     }

@@ -81,10 +81,10 @@ public class ControllerTests {
                 .id(1).name("mark").country("UA").email(null).gender(Gender.M).deleted(Boolean.FALSE)
                 .build();
 
-        employeeRec = new EmployeeRec(1,"mark","UA",null,Gender.M, null,null,null);
+        employeeRec = new EmployeeRec(1,"mark","UA",null,Gender.M, null,null,null,null);
 
 
-        employeeRead = new EmployeeReadRec("mark","UA",null,Gender.M,null,null);
+        employeeRead = new EmployeeReadRec("mark","UA",null,Gender.M,null,null, null);
     }
 
     @Test

@@ -5,6 +5,7 @@ import com.example.demowithtests.domain.EmployeePassport;
 import com.example.demowithtests.domain.WorkPlace;
 import com.example.demowithtests.repository.EmployeePassportRepository;
 import com.example.demowithtests.repository.EmployeeRepository;
+import com.example.demowithtests.repository.WorkPlaceRepository;
 import com.example.demowithtests.service.passport.EmployeePassportService;
 import com.example.demowithtests.service.work_place.WorkPlaceService;
 import com.example.demowithtests.util.annotations.entity.ActivateCustomAnnotations;
@@ -33,9 +34,11 @@ public class EmployeeCRUDService implements EmployeeService {
     private final EmployeePassportRepository employeePassportRepository;
     private final EmployeePassportService employeePassportService;
     private final WorkPlaceService workPlaceService;
+    private final WorkPlaceRepository workPlaceRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
+
     @ActivateCustomAnnotations({ToLowerCase.class, Name.class})
     @Override
     // @Transactional(propagation = Propagation.MANDATORY)
@@ -119,8 +122,8 @@ public class EmployeeCRUDService implements EmployeeService {
     @Override
     public Employee handPassport(Integer employeeId, Long passportId) {
         Employee employee = getById(employeeId);
-        if(employee.getEmployeePassport()!=null){
-            if(employee.getEmployeePassport().getIsHanded()){
+        if (employee.getEmployeePassport() != null) {
+            if (employee.getEmployeePassport().getIsHanded()) {
                 throw new RuntimeException("This employee have passport");
             }
         }
@@ -129,11 +132,18 @@ public class EmployeeCRUDService implements EmployeeService {
         employee.setEmployeePassport(employeePassport);
         return employeeRepository.save(employee);
     }
+
     @Override
-    public Employee reserveWorkPlace(Integer employeeId, Long workPlaceId){
+    public Employee reserveWorkPlace(Integer employeeId, Long workPlaceId) {
         Employee employee = getById(employeeId);
         WorkPlace workPlace = workPlaceService.getWorkPlaceById(workPlaceId);
-        employee.setWorkPlaces(new HashSet<>(List.of(workPlace)));
+        if(employee.getWorkPlaces().size()<3 && workPlace.getIsActive()){
+            workPlace.setIsActive(Boolean.FALSE);
+            workPlaceRepository.save(workPlace);
+            employee.setWorkPlaces(Set.of(workPlace));
+        }else {
+            throw new RuntimeException("Employee have more 3 work place! Or work place is busy!");
+        }
         return employeeRepository.save(employee);
     }
 

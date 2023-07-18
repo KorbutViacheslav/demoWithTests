@@ -1,6 +1,7 @@
 package com.example.demowithtests.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -30,6 +31,6 @@ public class WorkPlace {
 
     @ManyToMany(mappedBy = "workPlaces")
     @JsonIgnore
-    private Set<Employee> employee;
+    private Set<Employee> employee = new HashSet<>();
 
 }

@@ -3,6 +3,8 @@ package com.example.demowithtests.domain;
 import com.example.demowithtests.util.annotations.entity.Name;
 import com.example.demowithtests.util.annotations.entity.ToLowerCase;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -51,6 +53,7 @@ public class Employee {
             joinColumns = @JoinColumn(name = "employee_id"),
             inverseJoinColumns = @JoinColumn(name = "work_places_id")
     )
-    private Set<WorkPlace> workPlaces;
+    @JsonManagedReference
+    private Set<WorkPlace> workPlaces = new HashSet<>();
 
 }
