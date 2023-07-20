@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -20,8 +21,7 @@ public class WorkPlaceController {
 
     @PostMapping("/place")
     public WorkPlace createWorkPlace(@RequestBody @Valid WorkPlace workPlace) {
-        WorkPlace w = workPlaceService.create(workPlace);
-        return w;
+        return workPlaceService.create(workPlace);
     }
 
     @GetMapping("/place/{id}")
@@ -35,5 +35,10 @@ public class WorkPlaceController {
         String massage = String.format("Successfully! Work place by id: %s was deleted!", id);
         workPlaceService.deleteWorkplaceById(id);
         return ResponseEntity.ok().body(massage);
+    }
+
+    @GetMapping("/place")
+    public ResponseEntity<List<WorkPlace>> getAllFreeWorkplace() {
+        return ResponseEntity.ok().body(workPlaceService.getAllFreeWorkPlaces());
     }
 }

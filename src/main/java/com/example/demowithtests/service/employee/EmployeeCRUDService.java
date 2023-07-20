@@ -3,14 +3,9 @@ package com.example.demowithtests.service.employee;
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.domain.EmployeePassport;
 import com.example.demowithtests.domain.Reservation;
-import com.example.demowithtests.domain.WorkPlace;
-import com.example.demowithtests.repository.EmployeePassportRepository;
 import com.example.demowithtests.repository.EmployeeRepository;
-import com.example.demowithtests.repository.ReserveRepository;
-import com.example.demowithtests.repository.WorkPlaceRepository;
 import com.example.demowithtests.service.passport.EmployeePassportService;
 import com.example.demowithtests.service.work_place.ReserveService;
-import com.example.demowithtests.service.work_place.WorkPlaceService;
 import com.example.demowithtests.util.annotations.entity.ActivateCustomAnnotations;
 import com.example.demowithtests.util.annotations.entity.Name;
 import com.example.demowithtests.util.annotations.entity.ToLowerCase;
@@ -25,8 +20,6 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,11 +29,7 @@ import java.util.stream.Collectors;
 public class EmployeeCRUDService implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
-    private final EmployeePassportRepository employeePassportRepository;
     private final EmployeePassportService employeePassportService;
-    private final WorkPlaceService workPlaceService;
-    private final WorkPlaceRepository workPlaceRepository;
-    private final ReserveRepository reserveRepository;
     private final ReserveService reserveService;
 
     @PersistenceContext
@@ -75,8 +64,7 @@ public class EmployeeCRUDService implements EmployeeService {
 
     @Override
     public Page<Employee> getAllWithPagination(Pageable pageable) {
-        Page<Employee> list = employeeRepository.findAll(pageable);
-        return list;
+        return employeeRepository.findAll(pageable);
     }
 
     @Override

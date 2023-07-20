@@ -27,7 +27,7 @@ public class WorkPlace {
 
     private Boolean coffeeMachine = Boolean.TRUE;
 
-    private Boolean isActive = Boolean.TRUE;
+    private Boolean isFree = Boolean.TRUE;
 
     @OneToMany(mappedBy = "workPlace")
     @JsonIgnore

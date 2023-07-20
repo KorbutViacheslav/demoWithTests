@@ -183,12 +183,12 @@ public class EmployeeController implements EmployeeControllerApi {
     }
 
     /**
-     * @implNote home task №14. reserve work place.
+     * @implNote home task №14. Reserve work place.
      */
     @PatchMapping("/user/place")
     @ResponseStatus(HttpStatus.OK)
-    public Employee reserveWorkPlace(@RequestHeader("employeeId") Integer employeeId,
-                                        @RequestHeader("workPlaceId") Long workPlaceId){
-        return employeeService.reserveWorkPlace(employeeId,workPlaceId);
+    public EmployeeReadRec reserveWorkPlace(@RequestHeader("employeeId") Integer employeeId,
+                                            @RequestHeader("workPlaceId") Long workPlaceId) {
+        return employeeMapper.toReadRec(employeeService.reserveWorkPlace(employeeId, workPlaceId));
     }
 }

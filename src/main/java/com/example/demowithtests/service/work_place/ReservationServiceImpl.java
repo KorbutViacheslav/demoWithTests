@@ -2,18 +2,18 @@ package com.example.demowithtests.service.work_place;
 
 import com.example.demowithtests.domain.Employee;
 import com.example.demowithtests.domain.Reservation;
+import com.example.demowithtests.domain.WorkPlace;
 import com.example.demowithtests.repository.EmployeeRepository;
 import com.example.demowithtests.repository.ReserveRepository;
 import com.example.demowithtests.repository.WorkPlaceRepository;
+import com.example.demowithtests.util.exception.employee.ResourceNotFoundException;
+import com.example.demowithtests.util.exception.reservation.ReservationNotFoundException;
+import com.example.demowithtests.util.exception.workplace.WorkPlaceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.webjars.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,38 +25,32 @@ public class ReservationServiceImpl implements ReserveService {
 
     @Override
     public Reservation create(Integer employeeId, Long workPlaceId) {
-        var employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new NotFoundException("Employee absent"));
-        if (employee.getReservations().size() >= 3) {
-            throw new RuntimeException("Employee dont make more work places");
-        }
-        var workPlace = workPlaceRepository.findById(workPlaceId)
-                .orElseThrow(() -> new NotFoundException("An employee cannot have more than 3 jobs"));
-        if (!workPlace.getIsActive()) {
-            throw new RuntimeException("Work place busy!");
-        }
-        workPlace.setIsActive(Boolean.FALSE);
+        var employee = getEmployee(employeeId);
+        var workPlace = getWorkPlace(workPlaceId);
+        workPlace.setIsFree(Boolean.FALSE);
         workPlaceRepository.save(workPlace);
 
-        var reservation = new Reservation();
-        reservation.setEmployee(employee);
-        reservation.setWorkPlace(workPlace);
-        reservation.setIsActive(Boolean.TRUE);
-        reservation.setStartTime(LocalDateTime.now());
-        reservation.setEndTime(LocalDateTime.now().plusMinutes(1));
+        var reservation = Reservation.builder()
+                .employee(employee)
+                .workPlace(workPlace)
+                .isActive(Boolean.TRUE)
+                .startTime(LocalDateTime.now())
+                .endTime(LocalDateTime.now().plusMinutes(1))
+                .build();
         return reserveRepository.save(reservation);
     }
 
+
     @Override
     public Reservation getReservationById(Long id) {
-        return reserveRepository.findById(id).orElseThrow(() -> new NotFoundException("Reservation absent!"));
+        return reserveRepository.findById(id).orElseThrow(ReservationNotFoundException::new);
     }
 
     @Override
     public List<Reservation> getAllReservation() {
         List<Reservation> list = reserveRepository.findAll();
         if (list.isEmpty()) {
-            throw new NotFoundException("No one reservation not found");
+            throw new ReservationNotFoundException();
         }
         return list;
     }
@@ -81,14 +75,16 @@ public class ReservationServiceImpl implements ReserveService {
         }
     }
 
+    /**
+     * @apiNote Inside method for updateReservationStatus().
+     */
     private List<Reservation> getReservations() {
         var reservations = reserveRepository.findAll();
         if (reservations.isEmpty()) {
-            throw new NotFoundException("No one reservation not found!");
+            throw new ReservationNotFoundException();
         }
         return reservations;
     }
-
 
     private void updateEmployee(Reservation reservation) {
         var employee = reservation.getEmployee();
@@ -97,10 +93,31 @@ public class ReservationServiceImpl implements ReserveService {
         employeeRepository.save(employee);
     }
 
-
     private void updateWorkPlace(Reservation reservation) {
         var workPlace = reservation.getWorkPlace();
-        workPlace.setIsActive(Boolean.TRUE);
+        workPlace.setIsFree(Boolean.TRUE);
         workPlaceRepository.save(workPlace);
+    }
+
+    /**
+     * @apiNote Inside method for create().
+     */
+
+    private WorkPlace getWorkPlace(Long workPlaceId) {
+        var workPlace = workPlaceRepository.findById(workPlaceId)
+                .orElseThrow(WorkPlaceNotFoundException::new);
+        if (!workPlace.getIsFree()) {
+            throw new IllegalStateException("Work place busy!");
+        }
+        return workPlace;
+    }
+
+    private Employee getEmployee(Integer employeeId) {
+        var employee = employeeRepository.findById(employeeId)
+                .orElseThrow(ResourceNotFoundException::new);
+        if (employee.getReservations().size() >= 3) {
+            throw new IllegalStateException("Employee dont make more work places");
+        }
+        return employee;
     }
 }

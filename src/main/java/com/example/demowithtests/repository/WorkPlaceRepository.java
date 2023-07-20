@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface WorkPlaceRepository extends JpaRepository<WorkPlace, Long> {
 
-    List<WorkPlace> findAllByIsActiveTrue();
+    List<WorkPlace> findAllByIsFreeTrue();
 
-    List<WorkPlace> findAllByIsActiveFalse();
+    List<WorkPlace> findAllByIsFreeFalse();
 }

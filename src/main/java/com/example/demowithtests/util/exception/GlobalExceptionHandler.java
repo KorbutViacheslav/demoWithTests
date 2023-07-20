@@ -9,6 +9,8 @@ import com.example.demowithtests.util.exception.passport.PassportNoOneFindExcept
 import com.example.demowithtests.util.exception.passport.PassportNotFoundException;
 import com.example.demowithtests.util.exception.photo.PhotoNoOneFindException;
 import com.example.demowithtests.util.exception.photo.PhotoNotFoundException;
+import com.example.demowithtests.util.exception.reservation.ReservationNotFoundException;
+import com.example.demowithtests.util.exception.workplace.WorkPlaceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -28,6 +30,8 @@ public class GlobalExceptionHandler {
     private final static String PASSPORT_NO_ONE_FIND = "No one passport find in database!";
     private final static String PHOTO_NO_ONE_FIND = "No one photo find in database!";
     private final static String PHOTO_NOT_FOUND_WITH_ID = "Photo not found in database!";
+    private final static String WORK_PLACE_NOT_FOUND = "Work place not fount!";
+    private final static String RESERVATION_NOT_FOUND = "Reservation place not fount!";
 
     /**
      * @apiNote Exceptions methods to Employee entity.
@@ -114,6 +118,26 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<?> photoNotFound(WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(new Date(),
                 PHOTO_NOT_FOUND_WITH_ID, request.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * @apiNote Exceptions methods to WorkPlace entity.
+     */
+    @ExceptionHandler(WorkPlaceNotFoundException.class)
+    protected ResponseEntity<?> workPlaceNotFound(WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(new Date(),
+                WORK_PLACE_NOT_FOUND, request.getDescription(false));
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    /**
+     * @apiNote Exceptions methods to Reservation entity.
+     */
+    @ExceptionHandler(ReservationNotFoundException.class)
+    protected ResponseEntity<?> reservationNotFound(WebRequest request) {
+        ErrorDetails errorDetails = new ErrorDetails(new Date(),
+                RESERVATION_NOT_FOUND, request.getDescription(false));
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 

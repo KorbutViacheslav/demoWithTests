@@ -2,9 +2,9 @@ package com.example.demowithtests.service.work_place;
 
 import com.example.demowithtests.domain.WorkPlace;
 import com.example.demowithtests.repository.WorkPlaceRepository;
+import com.example.demowithtests.util.exception.workplace.WorkPlaceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
 
 import java.util.List;
 
@@ -21,17 +21,12 @@ public class WorkPlaceServiceImpl implements WorkPlaceService {
 
     @Override
     public WorkPlace getWorkPlaceById(Long id) {
-        return workPlaceRepository.findById(id).orElseThrow(() -> new NotFoundException("Work place is absent!"));
-    }
-
-    @Override
-    public WorkPlace updateWorkPlaceById(Long id) {
-        return null;
+        return workPlaceRepository.findById(id).orElseThrow(WorkPlaceNotFoundException::new);
     }
 
     @Override
     public void deleteWorkplaceById(Long id) {
-        WorkPlace workPlace = workPlaceRepository.findById(id).orElseThrow();
+        WorkPlace workPlace = workPlaceRepository.findById(id).orElseThrow(WorkPlaceNotFoundException::new);
         workPlaceRepository.deleteById(workPlace.getId());
     }
 
@@ -39,7 +34,7 @@ public class WorkPlaceServiceImpl implements WorkPlaceService {
     public List<WorkPlace> getAllWorkPlaces() {
         List<WorkPlace> list = workPlaceRepository.findAll();
         if (list.isEmpty()) {
-            throw new NotFoundException("No one work places found!");
+            throw new WorkPlaceNotFoundException();
         } else {
             return list;
         }
@@ -47,9 +42,9 @@ public class WorkPlaceServiceImpl implements WorkPlaceService {
 
     @Override
     public List<WorkPlace> getAllFreeWorkPlaces() {
-        List<WorkPlace> list = workPlaceRepository.findAllByIsActiveTrue();
+        List<WorkPlace> list = workPlaceRepository.findAllByIsFreeTrue();
         if (list.isEmpty()) {
-            throw new NotFoundException("No one work places found!");
+            throw new WorkPlaceNotFoundException();
         } else {
             return list;
         }
@@ -57,9 +52,9 @@ public class WorkPlaceServiceImpl implements WorkPlaceService {
 
     @Override
     public List<WorkPlace> getAllBusyWorkPlaces() {
-        List<WorkPlace> list = workPlaceRepository.findAllByIsActiveFalse();
+        List<WorkPlace> list = workPlaceRepository.findAllByIsFreeFalse();
         if (list.isEmpty()) {
-            throw new NotFoundException("No one work places found!");
+            throw new WorkPlaceNotFoundException();
         } else {
             return list;
         }

@@ -10,8 +10,6 @@ public interface WorkPlaceService {
 
     WorkPlace getWorkPlaceById(Long id);
 
-    WorkPlace updateWorkPlaceById(Long id);
-
     void deleteWorkplaceById(Long id);
 
     List<WorkPlace> getAllWorkPlaces();
