@@ -1,6 +1,5 @@
 package com.example.demowithtests.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
@@ -30,8 +29,8 @@ public class WorkPlace {
 
     private Boolean isActive = Boolean.TRUE;
 
-    @ManyToMany(mappedBy = "workPlaces",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "workPlace")
     @JsonIgnore
-    private Set<Employee> employee = new HashSet<>();
+    private Set<Reservation> reservations = new HashSet<>();
 
 }

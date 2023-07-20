@@ -1,6 +1,7 @@
 package com.example.demowithtests.dto.employee;
 
 import com.example.demowithtests.domain.Gender;
+import com.example.demowithtests.domain.Reservation;
 import com.example.demowithtests.domain.WorkPlace;
 import com.example.demowithtests.dto.addres.AddressRec;
 import com.example.demowithtests.dto.passport.PassportReadRec;
@@ -14,5 +15,5 @@ public record EmployeeReadRec(String name,
                               Gender gender,
                               Set<AddressRec> addresses,
                               PassportReadRec passportReadRec,
-                              Set<WorkPlace> workPlaces) {
+                              Set<Reservation> reservations) {
 }

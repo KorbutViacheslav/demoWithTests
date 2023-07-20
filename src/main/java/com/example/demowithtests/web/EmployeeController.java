@@ -187,8 +187,8 @@ public class EmployeeController implements EmployeeControllerApi {
      */
     @PatchMapping("/user/place")
     @ResponseStatus(HttpStatus.OK)
-    public EmployeeReadRec reserveWorkPlace(@RequestHeader("employeeId") Integer employeeId,
+    public Employee reserveWorkPlace(@RequestHeader("employeeId") Integer employeeId,
                                         @RequestHeader("workPlaceId") Long workPlaceId){
-        return employeeMapper.toReadRec(employeeService.reserveWorkPlace(employeeId,workPlaceId));
+        return employeeService.reserveWorkPlace(employeeId,workPlaceId);
     }
 }

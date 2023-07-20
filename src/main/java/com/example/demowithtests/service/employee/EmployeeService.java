@@ -29,5 +29,4 @@ public interface EmployeeService {
 
     Employee reserveWorkPlace(Integer employeeId, Long workPlaceId);
 
-
 }
