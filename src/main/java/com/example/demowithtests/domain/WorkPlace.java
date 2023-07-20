@@ -20,13 +20,9 @@ public class WorkPlace {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
-
     private Boolean airCondition = Boolean.TRUE;
-
     private Boolean coffeeMachine = Boolean.TRUE;
-
     private Boolean isFree = Boolean.TRUE;
 
     @OneToMany(mappedBy = "workPlace")

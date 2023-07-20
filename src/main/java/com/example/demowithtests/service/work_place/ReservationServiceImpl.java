@@ -48,7 +48,7 @@ public class ReservationServiceImpl implements ReserveService {
 
     @Override
     public List<Reservation> getAllReservation() {
-        List<Reservation> list = reserveRepository.findAll();
+        var list = reserveRepository.findAll();
         if (list.isEmpty()) {
             throw new ReservationNotFoundException();
         }

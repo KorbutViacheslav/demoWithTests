@@ -23,12 +23,8 @@ public class Reservation {
     @JoinColumn(name = "employee_id")
     @JsonBackReference
     private Employee employee;
-
-
     private LocalDateTime startTime;
-
     private LocalDateTime endTime;
-
     private Boolean isActive = Boolean.FALSE;
 
     @ManyToOne
