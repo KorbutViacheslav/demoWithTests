@@ -1,10 +1,12 @@
 package com.example.demowithtests.service.employee;
 
 import com.example.demowithtests.domain.Employee;
+import com.example.demowithtests.domain.EmployeePassport;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface EmployeeService {
@@ -28,5 +30,11 @@ public interface EmployeeService {
     Employee handPassport(Integer employeeId, Long passportId);
 
     Employee reserveWorkPlace(Integer employeeId, Long workPlaceId);
+
+    void deprivePassport(Integer id);
+
+    Map<Long,Employee> getEmployeesWithDeprivePassports();
+    Map<String,String> getHistoryPassport();
+    Map<String,List<String>> getEmployeePassportHistory(Integer employeeId);
 
 }

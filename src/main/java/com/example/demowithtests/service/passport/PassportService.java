@@ -10,6 +10,7 @@ import com.example.demowithtests.util.exception.passport.PassportNoOneFindExcept
 import com.example.demowithtests.util.exception.passport.PassportNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -87,5 +88,18 @@ public class PassportService implements EmployeePassportService {
         Photo photo = photoService.getPhotoById(photoId);
         passport.setPhoto(photo);
         return passportRepository.save(passport);
+    }
+
+    /**
+     * @apiNote Homework_15. Found all deprive passports.
+     */
+    @Override
+    public List<EmployeePassport> getAllDeprivePassports() {
+        var passportList = passportRepository.findAll().stream()
+                .filter(p -> p.getPreviousPassportId() != null).toList();
+        if (passportList.isEmpty()) {
+            throw new PassportNoOneFindException();
+        }
+        return passportList;
     }
 }

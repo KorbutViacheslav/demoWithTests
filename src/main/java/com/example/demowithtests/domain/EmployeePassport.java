@@ -25,6 +25,7 @@ public class EmployeePassport {
     private String bodyHanded;
     private Date handDate;
     private LocalDateTime expireDate;
+    private Integer previousPassportId;
 
     @Column(name = "is_handed")
     private Boolean isHanded = Boolean.FALSE;

@@ -21,4 +21,6 @@ public interface EmployeePassportService {
     List<EmployeePassport> getAllNotHanded();
 
     public EmployeePassport pastePhoto(Long passportId, Long photoId);
+
+    List<EmployeePassport> getAllDeprivePassports();
 }

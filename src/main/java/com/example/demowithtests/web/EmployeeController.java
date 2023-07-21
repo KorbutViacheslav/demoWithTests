@@ -1,6 +1,7 @@
 package com.example.demowithtests.web;
 
 import com.example.demowithtests.domain.Employee;
+import com.example.demowithtests.domain.EmployeePassport;
 import com.example.demowithtests.dto.employee.EmployeeReadRec;
 import com.example.demowithtests.dto.employee.EmployeeRec;
 import com.example.demowithtests.service.employee.EmployeeSearchService;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -190,5 +192,33 @@ public class EmployeeController implements EmployeeControllerApi {
     public EmployeeReadRec reserveWorkPlace(@RequestHeader("employeeId") Integer employeeId,
                                             @RequestHeader("workPlaceId") Long workPlaceId) {
         return employeeMapper.toReadRec(employeeService.reserveWorkPlace(employeeId, workPlaceId));
+    }
+
+    /**
+     * @implNote home task №15. History method.Get all passports who be deprived.
+     */
+    @GetMapping("/user/history")
+    public ResponseEntity<Map<String, String>> history() {
+        return ResponseEntity.ok()
+                .body(employeeService.getHistoryPassport());
+    }
+
+    /**
+     * @implNote home task №15. History deprived passports method by employee id.
+     */
+    @GetMapping("/user/history/{id}")
+    public ResponseEntity<Map<String, List<String>>> historyById(@PathVariable Integer id) {
+        return ResponseEntity.ok()
+                .body(employeeService.getEmployeePassportHistory(id));
+    }
+
+    /**
+     * @implNote home task №15. Passport deprive.
+     */
+    @PatchMapping("/user/{id}/dep")
+    public ResponseEntity<String> deprivePassport(@PathVariable Integer id) {
+        String massage = "Passport deprive in employee by id " + id;
+        employeeService.deprivePassport(id);
+        return ResponseEntity.ok().body(massage);
     }
 }
