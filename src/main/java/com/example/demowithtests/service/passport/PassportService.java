@@ -10,7 +10,6 @@ import com.example.demowithtests.util.exception.passport.PassportNoOneFindExcept
 import com.example.demowithtests.util.exception.passport.PassportNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.Date;

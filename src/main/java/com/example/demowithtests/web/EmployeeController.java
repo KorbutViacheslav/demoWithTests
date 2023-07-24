@@ -1,7 +1,6 @@
 package com.example.demowithtests.web;
 
 import com.example.demowithtests.domain.Employee;
-import com.example.demowithtests.domain.EmployeePassport;
 import com.example.demowithtests.dto.employee.EmployeeReadRec;
 import com.example.demowithtests.dto.employee.EmployeeRec;
 import com.example.demowithtests.service.employee.EmployeeSearchService;
@@ -69,8 +68,7 @@ public class EmployeeController implements EmployeeControllerApi {
     @ResponseStatus(HttpStatus.OK)
     public EmployeeReadRec getEmployeeById(@PathVariable Integer id) {
         var employee = employeeService.getById(id);
-        var dto = employeeMapper.toReadRec(employee);
-        return dto;
+        return employeeMapper.toReadRec(employee);
     }
 
     //Update user
