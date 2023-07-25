@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -35,8 +36,12 @@ public class EmployeeController implements EmployeeControllerApi {
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
     public EmployeeRec saveEmployee(@RequestBody @Valid EmployeeRec requestForSave) {
-        var employee = employeeMapper.toEmployee(requestForSave);
-        return employeeMapper.toEmployeeDto(employeeService.create(employee));
+        try {
+            var employee = employeeMapper.toEmployee(requestForSave);
+            return employeeMapper.toEmployeeDto(employeeService.create(employee));
+        } catch (RuntimeException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Trigger Exception: Email cannot be null");
+        }
     }
 
     @PostMapping("/usersS")
