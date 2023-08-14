@@ -11,6 +11,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS trigger_user_email_null ON users;
+
 CREATE TRIGGER trigger_user_email_null
     BEFORE INSERT OR UPDATE
     ON users
@@ -19,7 +21,7 @@ EXECUTE FUNCTION check_employees_email();
 
 --Trigger audit deleting passports
 --Create new table from audit
-CREATE TABLE audit_passports_delete
+CREATE TABLE IF NOT EXISTS audit_passports_delete
 (
     id          SERIAL PRIMARY KEY,
     stamp       timestamp NOT NULL,
@@ -38,6 +40,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS trigger_audit_passports_delete ON passports;
 --Create trigger
 CREATE TRIGGER trigger_audit_passports_delete
     BEFORE UPDATE
@@ -48,8 +51,14 @@ EXECUTE FUNCTION write_audit_delete_passports();
 
 --Trigger replaces delete photo with boolean operation
 --Add new column to photo table
-ALTER TABLE photo
-    add is_deleted BOOLEAN DEFAULT FALSE;
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'photo' AND column_name = 'is_deleted') THEN
+        ALTER TABLE photo
+            ADD COLUMN is_deleted BOOLEAN DEFAULT FALSE;
+    END IF;
+END $$;
+--ALTER TABLE photo
+    --add is_deleted BOOLEAN DEFAULT FALSE;
 --Created function change deleted photo
 CREATE OR REPLACE FUNCTION change_delete_photo()
     RETURNS TRIGGER AS
@@ -61,6 +70,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 --Created trigger change deleted photo
+DROP TRIGGER IF EXISTS trigger_change_delete_photo ON photo;
 CREATE TRIGGER trigger_change_delete_photo
     AFTER DELETE
     ON photo

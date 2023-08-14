@@ -28,7 +28,7 @@ spring:
     #generate-ddl: true
   flyway:
     #    locations: filesystem:.\src\main\resources\db\migration
-    enabled: false
+    enabled: true
     #    clean-disabled: true
     baseline-on-migrate: true
   #Email sender
