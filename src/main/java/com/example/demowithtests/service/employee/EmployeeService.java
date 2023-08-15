@@ -14,6 +14,8 @@ public interface EmployeeService {
     Employee create(Employee employee);
 
     Employee createEM(Employee employee);
+    Employee getEmployeeByIdEM(Integer id);
+    List<Employee> getAllEM();
 
     List<Employee> getAll();
 

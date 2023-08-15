@@ -224,4 +224,27 @@ public class EmployeeController implements EmployeeControllerApi {
         employeeService.deprivePassport(id);
         return ResponseEntity.ok().body(massage);
     }
+
+    /**
+     * @implNote home task №17. Methods to EntityManager.
+     */
+    @GetMapping("/usersEM")
+    @ResponseStatus(HttpStatus.OK)
+    public List<EmployeeReadRec> getAllEM() {
+        return employeeMapper.toListEmployeeReadDto(employeeService.getAllEM());
+    }
+
+    @GetMapping("/userEM/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public EmployeeReadRec getEmployeeEM(@PathVariable Integer id) {
+        return employeeMapper.toReadRec(employeeService.getEmployeeByIdEM(id));
+    }
+
+    @PostMapping("/userEM")
+    public ResponseEntity<String> postEmployeeEM(@RequestBody EmployeeRec employeeRec) {
+        Employee employee = employeeMapper.toEmployee(employeeRec);
+        EmployeeReadRec readRec = employeeMapper.toReadRec(employeeService.createEM(employee));
+        String massage = "The new employee is successfully created and added to database.\n" + readRec.toString();
+        return ResponseEntity.ok(massage);
+    }
 }

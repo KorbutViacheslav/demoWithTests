@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,6 +39,23 @@ public class EmployeeCRUDService implements EmployeeService {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Override
+    public Employee createEM(Employee employee) {
+        return entityManager.merge(employee);
+    }
+    @Override
+    @Transactional
+    public List<Employee> getAllEM() {
+        List<Employee> employeeList = entityManager
+                        .createNativeQuery("SELECT * FROM users", Employee.class)
+                        .getResultList();
+        return employeeList;
+    }
+    @Override
+    public Employee getEmployeeByIdEM(Integer id) {
+        return entityManager.find(Employee.class, id);
+    }
+
     @ActivateCustomAnnotations({ToLowerCase.class, Name.class})
     @Override
     // @Transactional(propagation = Propagation.MANDATORY)
@@ -46,11 +64,6 @@ public class EmployeeCRUDService implements EmployeeService {
         return employeeRepository.save(employee);
     }
 
-
-    @Override
-    public Employee createEM(Employee employee) {
-        return entityManager.merge(employee);
-    }
 
     @Override
     public List<Employee> getAll() {
@@ -167,6 +180,7 @@ public class EmployeeCRUDService implements EmployeeService {
         }
         return historyList;
     }
+
     /**
      * @apiNote Homework_15. Get passport history who deprived.
      */
@@ -181,6 +195,7 @@ public class EmployeeCRUDService implements EmployeeService {
         }
         return history;
     }
+
     /**
      * @apiNote Homework_15. Get employee history with deprived passports.
      */
@@ -192,6 +207,7 @@ public class EmployeeCRUDService implements EmployeeService {
         list.put(formEmployeeInfo, pass);
         return list;
     }
+
     /**
      * @apiNote Inside method getEmployeePassportHistory().
      */
@@ -205,7 +221,7 @@ public class EmployeeCRUDService implements EmployeeService {
                 pass.add(formPassportInfo);
             }
         }
-        if(pass.isEmpty()){
+        if (pass.isEmpty()) {
             throw new PassportNoOneFindException();
         }
         return pass;
