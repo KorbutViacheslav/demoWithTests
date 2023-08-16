@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: add_operator_code_to_phones
+      author: viacheslav
+      changes:
+        - addColumn:
+            tableName: phones
+            columns:
+              - column:
+                  name: operator_code
+                  type: VARCHAR(255)

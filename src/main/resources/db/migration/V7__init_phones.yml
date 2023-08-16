@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_phones_table
+      author: viacheslav
+      changes:
+        - dropTable:
+            tableName: phones
+        - createTable:
+            tableName: phones
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: country_code
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: number
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_active
+                  type: BOOLEAN
+                  defaultValueBoolean: true

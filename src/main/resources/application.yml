@@ -28,9 +28,14 @@ spring:
     #generate-ddl: true
   flyway:
     #    locations: filesystem:.\src\main\resources\db\migration
-    enabled: true
+    enabled: false
     #    clean-disabled: true
-    baseline-on-migrate: true
+    baseline-on-migrate: false
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/migration/changelog.yml
+    default-schema: liquibase
   #Email sender
   mail:
     host: smtp.gmail.com

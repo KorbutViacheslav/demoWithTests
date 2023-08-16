@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - include:
+      file: db/migration/V1__init.yml
+  - include:
+      file: db/migration/V2__added_gender_to_employee.yml
+  - include:
+      file: db/migration/V3__added_new_is_deleted.yml
+  - include:
+      file: db/migration/V4__check_trigger.yml
+  - include:
+      file: db/migration/V5__remove_is_deleted_in_users.yml
+  - include:
+      file: db/migration/V6__crate_phone.yml
+  - include:
+      file: db/migration/V7__init_phones.yml
+  - include:
+      file: db/migration/V8__add_operator_code.yml

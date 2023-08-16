@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3
+      author: viacheslav
+      changes:
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: gender
+                  type: varchar
+                  remarks: "Gender of the user"
